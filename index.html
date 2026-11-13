@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Australian Road Trauma Insights | Group DV03_T25</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      /* Clean Light Modern Theme */
+      --bg-body: #FFFFFF;
+      --bg-page: #F8FAFC;
+      --bg-card: #FFFFFF;
+      --bg-subtle: #F1F5F9;
+      --bg-accent-subtle: #F0F9FF;
+      
+      --border-subtle: #E2E8F0;
+      --border-medium: #CBD5E1;
+      --border-dashed: #94A3B8;
+
+      /* Vibrant Visual Data Accents (Infographic Palette) */
+      --color-primary: #0284C7;       /* Sky Blue */
+      --color-primary-dark: #0369A1;
+      --color-teal: #0D9488;          /* Teal */
+      --color-emerald: #10B981;       /* Emerald Green */
+      --color-indigo: #6366F1;       /* Indigo */
+      --color-purple: #8B5CF6;       /* Violet */
+      --color-pink: #EC4899;         /* Vibrant Pink */
+      --color-amber: #F59E0B;        /* Warm Amber */
+      --color-rose: #F43F5E;         /* Rose Red */
+
+      /* Typography & Neutral Shades */
+      --text-heading: #0F172A;
+      --text-main: #334155;
+      --text-muted: #64748B;
+      --text-light: #94A3B8;
+
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-full: 9999px;
+
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+      --shadow-card: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -2px rgba(15, 23, 42, 0.04);
+      --shadow-hover: 0 16px 32px -4px rgba(15, 23, 42, 0.10), 0 6px 12px -2px rgba(15, 23, 42, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.7;
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ============================================================
+       FULLSCREEN LANDING SCREEN (Matches Group 14 Layout)
+       ============================================================ */
+    .landing-cover {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      background: radial-gradient(circle at 50% 30%, #F0F9FF 0%, #FFFFFF 65%);
+      padding: 32px 24px 24px;
+    }
+
+    .landing-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .landing-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--color-primary-dark);
+      letter-spacing: 0.04em;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .landing-badge span.pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--color-emerald);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+      display: inline-block;
+    }
+
+    .landing-center {
+      text-align: center;
+      max-width: 880px;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 0;
+    }
+
+    .landing-pill {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-primary);
+      background: var(--bg-accent-subtle);
+      border: 1px solid #BAE6FD;
+      padding: 6px 18px;
+      border-radius: var(--radius-full);
+      margin-bottom: 24px;
+    }
+
+    .landing-title {
+      font-size: clamp(2.75rem, 6vw, 4.75rem);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.035em;
+      color: var(--text-heading);
+      margin-bottom: 16px;
+    }
+
+    .landing-subtitle {
+      font-size: clamp(1.2rem, 2.5vw, 1.75rem);
+      font-weight: 500;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin-bottom: 24px;
+    }
+
+    .landing-description {
+      font-size: 1.1rem;
+      color: var(--text-main);
+      max-width: 680px;
+      line-height: 1.7;
+      margin-bottom: 40px;
+    }
+
+    /* Group-14 Bouncing Scroll Button */
+    .discover-btn {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      gap: 8px;
+      color: var(--text-heading);
+      background: #FFFFFF;
+      border: 1px solid var(--border-medium);
+      padding: 14px 28px;
+      border-radius: var(--radius-full);
+      font-size: 0.95rem;
+      font-weight: 700;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      animation: bounce 2.2s infinite;
+    }
+
+    .discover-btn:hover {
+      background: var(--color-primary);
+      color: #FFFFFF;
+      border-color: var(--color-primary);
+      box-shadow: 0 8px 24px rgba(2, 132, 199, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .discover-btn svg {
+      transition: transform 0.2s ease;
+    }
+
+    .discover-btn:hover svg {
+      transform: translateY(3px);
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+      }
+      40% {
+        transform: translateY(9px);
+      }
+      60% {
+        transform: translateY(4px);
+      }
+    }
+
+    /* Bottom strip on landing screen (exact match to group 14) */
+    .landing-bottom-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+
+    .landing-authors {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    /* ============================================================
+       STICKY EDITORIAL NAVIGATION
+       ============================================================ */
+    nav.sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      background: rgba(255, 255, 255, 0.92);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 12px 0;
+      box-shadow: 0 1px 8px rgba(15, 23, 42, 0.03);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-heading);
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-indigo));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
+    }
+
+    .brand-text {
+      font-size: 0.98rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+    }
+
+    .brand-tag {
+      font-size: 0.72rem;
+      color: var(--color-primary);
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-full);
+      padding: 3px;
+      gap: 2px;
+      overflow-x: auto;
+    }
+
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: var(--text-heading);
+      background: #FFFFFF;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    /* ============================================================
+       PROJECT BRIEF & PROLOGUE
+       ============================================================ */
+    .story-prologue {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 48px;
+      margin-top: 48px;
+      margin-bottom: 56px;
+      box-shadow: var(--shadow-card);
+      position: relative;
+    }
+
+    .prologue-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-primary-dark);
+      background: var(--bg-accent-subtle);
+      border: 1px solid #BAE6FD;
+      padding: 4px 14px;
+      border-radius: var(--radius-full);
+      margin-bottom: 18px;
+    }
+
+    .prologue-title {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.25;
+      color: var(--text-heading);
+      margin-bottom: 20px;
+    }
+
+    .prologue-text {
+      font-size: 1.1rem;
+      color: var(--text-main);
+      line-height: 1.85;
+      margin-bottom: 20px;
+    }
+
+    .prologue-text a {
+      color: var(--color-primary);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      font-weight: 600;
+      transition: color 0.15s ease;
+    }
+
+    .prologue-text a:hover {
+      color: var(--color-primary-dark);
+    }
+
+    /* INFOGRAPHIC METRIC CALLOUTS (Inspired by user's reference image) */
+    .infographic-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 16px;
+      margin-top: 32px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .stat-card {
+      background: #FAFCFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      transition: all 0.25s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+      border-color: var(--border-medium);
+    }
+
+    /* Circular Letter/Number Badges from Infographic */
+    .stat-circle-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1rem;
+      color: #FFFFFF;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .badge-a { background: linear-gradient(135deg, #10B981, #06B6D4); }
+    .badge-b { background: linear-gradient(135deg, #0284C7, #6366F1); }
+    .badge-c { background: linear-gradient(135deg, #8B5CF6, #EC4899); }
+    .badge-d { background: linear-gradient(135deg, #F59E0B, #F43F5E); }
+
+    .stat-value {
+      font-size: 1.65rem;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-heading);
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .stat-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* ============================================================
+       SCROLLYTELLING CHAPTER CARDS
+       ============================================================ */
+    .story-chapter {
+      margin-bottom: 64px;
+      scroll-margin-top: 80px;
+    }
+
+    .chapter-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      box-shadow: var(--shadow-card);
+      transition: all 0.25s ease;
+    }
+
+    .chapter-card:hover {
+      box-shadow: var(--shadow-hover);
+      border-color: var(--border-medium);
+    }
+
+    .chapter-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .act-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      background: var(--bg-accent-subtle);
+      color: var(--color-primary-dark);
+      border: 1px solid #BAE6FD;
+    }
+
+    .chapter-theme-tag {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .chapter-title {
+      font-size: 1.85rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text-heading);
+      margin-bottom: 14px;
+      line-height: 1.3;
+    }
+
+    .chapter-narrative {
+      font-size: 1.05rem;
+      color: var(--text-main);
+      line-height: 1.85;
+      max-width: 980px;
+      margin-bottom: 24px;
+    }
+
+    /* ============================================================
+       BLANK VISUALIZATION CANVAS (Clean Dashboard Aesthetic)
+       ============================================================ */
+    .chart-canvas-blank {
+      width: 100%;
+      min-height: 400px;
+      background: #F8FAFC;
+      border: 2px dashed var(--border-medium);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      text-align: center;
+      position: relative;
+      transition: all 0.25s ease;
+      cursor: default;
+    }
+
+    .chart-canvas-blank:hover {
+      background: #F1F5F9;
+      border-color: var(--color-primary);
+    }
+
+    .canvas-icon-wrap {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-primary);
+      margin-bottom: 18px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .canvas-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-primary-dark);
+      background: #E0F2FE;
+      border: 1px solid #BAE6FD;
+      padding: 4px 14px;
+      border-radius: var(--radius-full);
+      margin-bottom: 10px;
+    }
+
+    .canvas-heading {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-heading);
+      margin-bottom: 8px;
+    }
+
+    .canvas-sub {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      max-width: 580px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .canvas-candidate-pills {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .candidate-pill {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-main);
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+
+    /* STORY CALLOUT BOX */
+    .story-callout {
+      margin-top: 24px;
+      padding: 18px 22px;
+      background: #FFFBEB;
+      border: 1px solid #FEF3C7;
+      border-left: 4px solid var(--color-amber);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 0.92rem;
+      color: #92400E;
+      line-height: 1.65;
+    }
+
+    .story-callout strong {
+      color: #78350F;
+    }
+
+    /* ============================================================
+       TEAM SECTION
+       ============================================================ */
+    .team-section {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 44px;
+      margin-bottom: 60px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .team-header {
+      margin-bottom: 28px;
+    }
+
+    .team-header-title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-heading);
+      margin-bottom: 6px;
+    }
+
+    .team-header-sub {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .team-box {
+      background: #F8FAFC;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      transition: all 0.25s ease;
+    }
+
+    .team-box:hover {
+      background: #FFFFFF;
+      box-shadow: var(--shadow-sm);
+      border-color: var(--border-medium);
+    }
+
+    .team-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #FFFFFF;
+      font-size: 1.15rem;
+      margin-bottom: 16px;
+    }
+
+    .avatar-aisyah {
+      background: linear-gradient(135deg, #EC4899, #8B5CF6);
+    }
+
+    .avatar-ishmael {
+      background: linear-gradient(135deg, #0284C7, #10B981);
+    }
+
+    .team-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-heading);
+    }
+
+    .team-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.84rem;
+      color: var(--color-primary);
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .team-role {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      margin-bottom: 14px;
+    }
+
+    .team-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    /* ============================================================
+       REAL WEBSITE FOOTER
+       ============================================================ */
+    footer.site-footer {
+      background: #FFFFFF;
+      border-top: 1px solid var(--border-subtle);
+      padding: 48px 0 36px;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 32px;
+      align-items: flex-start;
+    }
+
+    .footer-brand-col {
+      max-width: 520px;
+    }
+
+    .footer-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text-heading);
+      margin-bottom: 8px;
+    }
+
+    .footer-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 12px;
+    }
+
+    .footer-desc a {
+      color: var(--color-primary);
+      text-decoration: underline;
+    }
+
+    .footer-group-col {
+      text-align: right;
+    }
+
+    .footer-group-badge {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--text-heading);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .footer-group-badge span.grp-tag {
+      background: var(--bg-accent-subtle);
+      border: 1px solid #BAE6FD;
+      color: var(--color-primary-dark);
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .footer-sub {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .footer-uni {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      margin-top: 4px;
+    }
+
+    @media (max-width: 768px) {
+      .landing-cover { padding: 24px 16px 20px; }
+      .landing-title { font-size: 2.5rem; }
+      .landing-bottom-bar { flex-direction: column; gap: 8px; text-align: center; }
+      .story-prologue { padding: 28px 20px; }
+      .chapter-card { padding: 24px 18px; }
+      .footer-group-col { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     1. FULLSCREEN LANDING COVER (Modeled after group-14-data-visualisation)
+     ============================================================ -->
+<section class="landing-cover">
+  <!-- Top bar -->
+  <div class="landing-top-bar">
+    <div class="landing-badge">
+      <span class="pulse-dot"></span>
+      <span>Public Health Data Story &bull; BITRE 2011–2021</span>
+    </div>
+    <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 700; color: var(--text-muted);">
+      Group DV03_T25
+    </div>
+  </div>
+
+  <!-- Hero Content Center -->
+  <div class="landing-center">
+    <span class="landing-pill">COS30045 Data Visualisation Project</span>
+    <h1 class="landing-title">Australia's Road Trauma</h1>
+    <h2 class="landing-subtitle">Hospitalised Injuries from Road Crashes (2011–2021)</h2>
+    <p class="landing-description">
+      Behind every crash statistic is a patient, a family, and an ongoing burden on the healthcare system. Explore the untold human toll of non-fatal road trauma across Australia.
+    </p>
+
+    <!-- Group-14 Bouncing Scroll Button -->
+    <a href="#story-prologue" class="discover-btn">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 5v14M5 12l7 7 7-7"/>
+      </svg>
+      <span>Discover the Story</span>
+    </a>
+  </div>
+
+  <!-- Landing Bottom Bar (Exact match to Group-14) -->
+  <div class="landing-bottom-bar">
+    <p>@COS30045 Data Visualisation Project &bull; Group DV03_T25</p>
+    <p class="landing-authors">by Aisyah Salsabila &amp; Muhammad Ishmael 'Aqib</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     2. STICKY EDITORIAL NAVIGATION BAR
+     ============================================================ -->
+<nav class="sticky-nav">
+  <div class="container nav-inner">
+    <a href="#story-prologue" class="nav-brand">
+      <div class="brand-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-text">Australian Road Trauma Insights</div>
+        <div class="brand-tag">BITRE NON-FATAL SERIES</div>
+      </div>
+    </a>
+
+    <!-- Quick Story Chapter Links -->
+    <div class="nav-links">
+      <a href="#story-prologue" class="nav-link">Overview</a>
+      <a href="#act1" class="nav-link">1. National Arc</a>
+      <a href="#act2" class="nav-link">2. Vulnerable Users</a>
+      <a href="#act3" class="nav-link">3. Age &amp; Stay</a>
+      <a href="#act4" class="nav-link">4. Geography</a>
+      <a href="#act5" class="nav-link">5. Remoteness</a>
+      <a href="#team" class="nav-link">Team</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container" id="story-start">
+
+  <!-- ============================================================
+       3. PROLOGUE & PROJECT BRIEF
+       ============================================================ -->
+  <header class="story-prologue" id="story-prologue">
+    <span class="prologue-tag">Project Brief &amp; Context</span>
+    <h2 class="prologue-title">Hospitalised Injuries from Road Crashes in Australia</h2>
+    
+    <p class="prologue-text">
+      Road traffic accidents represent a significant public health issue in Australia. They are consistently identified as 
+      <a href="https://www.aihw.gov.au/reports/injury/injury-in-australia/contents/ranked-causes" target="_blank" rel="noopener noreferrer">one of the leading causes of injury-related hospitalisation nationally</a>. 
+      Each year, tens of thousands of individuals are admitted to hospital due to injuries sustained in road traffic accidents. While fatalities often receive substantial media and policy attention, non-fatal injuries constitute a considerably larger and ongoing burden on individuals, families, communities, and the healthcare system.
+    </p>
+
+    <p class="prologue-text" style="color: var(--text-muted); font-size: 1rem;">
+      Australian government agencies publish detailed, open-access datasets documenting hospitalised injuries resulting from road traffic accidents. These datasets include injury counts by year, jurisdiction, demographic characteristics, road user type, and selected population groups.
+    </p>
+
+    <!-- INFOGRAPHIC STATS TICKER (Inspired by user's reference image) -->
+    <div class="infographic-stats-grid">
+      <!-- Card A -->
+      <div class="stat-card">
+        <div class="stat-circle-badge badge-a">A</div>
+        <div>
+          <div class="stat-value">39,505</div>
+          <div class="stat-desc">Hospital admissions recorded in 2021</div>
+        </div>
+      </div>
+
+      <!-- Card B -->
+      <div class="stat-card">
+        <div class="stat-circle-badge badge-b">B</div>
+        <div>
+          <div class="stat-value">35.2%</div>
+          <div class="stat-desc">Car drivers (largest acute trauma cohort)</div>
+        </div>
+      </div>
+
+      <!-- Card C -->
+      <div class="stat-card">
+        <div class="stat-circle-badge badge-c">C</div>
+        <div>
+          <div class="stat-value">+42.1%</div>
+          <div class="stat-desc">Surge in cyclist hospitalisations (10-Yr)</div>
+        </div>
+      </div>
+
+      <!-- Card D -->
+      <div class="stat-card">
+        <div class="stat-circle-badge badge-d">D</div>
+        <div>
+          <div class="stat-value">11.8 Days</div>
+          <div class="stat-desc">Average acute bed stay for patients &ge;75</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       4. STORY CHAPTER 1: THE TEMPORAL ARC
+       ============================================================ -->
+  <section class="story-chapter" id="act1">
+    <div class="chapter-card">
+      <div class="chapter-meta">
+        <span class="act-badge">Story Chapter 01</span>
+        <span class="chapter-theme-tag">National Longitudinal Trajectory (2011–2021)</span>
+      </div>
+      <h2 class="chapter-title">Beyond the Fatalities: An 11-Year National Trajectory</h2>
+      <p class="chapter-narrative">
+        Over the decade spanning 2011 to 2021, road crash hospitalisations in Australia approached 40,000 acute admissions annually. While road safety roadmaps celebrate declines in road deaths, non-fatal trauma tells an entirely different story. Yet interpreting this decade requires peering beneath the surface: two critical reporting breaks in 2012 and 2017 restructured hospital reporting and clinical admission criteria, while nationwide stay-at-home public health directions created a distinct drop in travel exposure during 2020.
+      </p>
+
+      <!-- Blank Chart Canvas Placeholder -->
+      <div class="chart-canvas-blank">
+        <div class="canvas-icon-wrap">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
+        </div>
+        <span class="canvas-badge">Visualization Canvas &bull; Section 1</span>
+        <div class="canvas-heading">National Trend &amp; Policy Reporting Breaks</div>
+        <div class="canvas-sub">
+          Chart area reserved for temporal trajectory (2011–2021). Ready to embed interactive markers for the 2012 &amp; 2017 hospital definition updates and the 2020 COVID contraction.
+        </div>
+        <div class="canvas-candidate-pills">
+          <span class="candidate-pill">Candidate: Annotated Multi-Line Chart</span>
+          <span class="candidate-pill">Candidate: Longitudinal Stepped Area</span>
+          <span class="candidate-pill">Candidate: Horizon Chart</span>
+        </div>
+      </div>
+
+      <div class="story-callout">
+        <strong>Reporting Caveat:</strong> The noticeable increases in 2012 and 2017 reflect institutional reporting updates under national health reform agreements, not a sudden surge in underlying road crashes.
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       5. STORY CHAPTER 2: VULNERABLE ROAD USERS
+       ============================================================ -->
+  <section class="story-chapter" id="act2">
+    <div class="chapter-card">
+      <div class="chapter-meta">
+        <span class="act-badge">Story Chapter 02</span>
+        <span class="chapter-theme-tag">Road User Categories &amp; Mode Shift</span>
+      </div>
+      <h2 class="chapter-title">The Vulnerability Shift: The Quiet Surge in Two-Wheeled Trauma</h2>
+      <p class="chapter-narrative">
+        Enclosed vehicle drivers still constitute the largest absolute volume of road trauma (roughly 35% of all admissions), but the composition of trauma is undergoing a fundamental shift. As Australian cities embrace active transit, bicycle commuting, and gig-economy motorcycle delivery, vulnerable two-wheeled users have recorded the steepest percentage increases in acute injury hospitalisations over the past ten years.
+      </p>
+
+      <!-- Blank Chart Canvas Placeholder -->
+      <div class="chart-canvas-blank">
+        <div class="canvas-icon-wrap">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+        </div>
+        <span class="canvas-badge">Visualization Canvas &bull; Section 2</span>
+        <div class="canvas-heading">Road User Vulnerability &amp; Compositional Shift</div>
+        <div class="canvas-sub">
+          Chart area reserved for comparing road user categories (Drivers, Motorcyclists, Pedal Cyclists, Pedestrians, Passengers). Ready to visualize net absolute differences (&Delta;) alongside percentage share shifts.
+        </div>
+        <div class="canvas-candidate-pills">
+          <span class="candidate-pill">Candidate: Diverging Delta Bar Chart</span>
+          <span class="candidate-pill">Candidate: 100% Stacked Mode Share Stream</span>
+          <span class="candidate-pill">Candidate: Dumbbell Slope Graph</span>
+        </div>
+      </div>
+
+      <div class="story-callout">
+        <strong>Mode Shift Insight:</strong> Pedal cyclist admissions increased by +42.1% between 2012 and 2021, and motorcyclists by +26.8%, far outpacing car occupant injury growth rates.
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       6. STORY CHAPTER 3: AGE & HOSPITAL STAY
+       ============================================================ -->
+  <section class="story-chapter" id="act3">
+    <div class="chapter-card">
+      <div class="chapter-meta">
+        <span class="act-badge">Story Chapter 03</span>
+        <span class="chapter-theme-tag">Demographic Disparity &amp; Bed Occupancy</span>
+      </div>
+      <h2 class="chapter-title">The Age Divide: Peak Crash Volumes vs. Prolonged Hospital Stays</h2>
+      <p class="chapter-narrative">
+        Road trauma impacts demographics in two distinctly different dimensions: frequency versus severity. Young adults (aged 17–25), especially young men, sustain the highest sheer volume of acute collision admissions. In contrast, the acute healthcare burden—measured by length of hospital stay (bed days)—falls disproportionately on older Australians aged 75 and over, whose complex fractures and recovery periods average nearly 12 bed days per hospitalisation.
+      </p>
+
+      <!-- Blank Chart Canvas Placeholder -->
+      <div class="chart-canvas-blank">
+        <div class="canvas-icon-wrap">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </div>
+        <span class="canvas-badge">Visualization Canvas &bull; Section 3</span>
+        <div class="canvas-heading">Age &times; Biological Sex Disparities &amp; Hospital Bed Days</div>
+        <div class="canvas-sub">
+          Chart area reserved for demographic analysis. Ready to contrast Male vs. Female injury volumes across age brackets alongside the secondary metric of acute hospital bed occupancy.
+        </div>
+        <div class="canvas-candidate-pills">
+          <span class="candidate-pill">Candidate: Bi-Directional Population Butterfly</span>
+          <span class="candidate-pill">Candidate: Dual-Axis Grouped Bar + Dot Plot</span>
+          <span class="candidate-pill">Candidate: Demographic Heatmap Matrix</span>
+        </div>
+      </div>
+
+      <div class="story-callout">
+        <strong>Healthcare Capacity Insight:</strong> While patients &ge;75 represent a smaller percentage of total crash volume, their extended stays mean they occupy significant acute ward capacity across public health networks.
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       7. STORY CHAPTER 4: GEOGRAPHIC PARADOX
+       ============================================================ -->
+  <section class="story-chapter" id="act4">
+    <div class="chapter-card">
+      <div class="chapter-meta">
+        <span class="act-badge">Story Chapter 04</span>
+        <span class="chapter-theme-tag">State &amp; Territory Comparison</span>
+      </div>
+      <h2 class="chapter-title">The Geographic Paradox: Why High Population Doesn't Mean High Risk</h2>
+      <p class="chapter-narrative">
+        Looking at raw counts alone gives a misleading picture: New South Wales, Victoria, and Queensland account for the majority of admissions purely due to resident population scale. Once normalized by population, however, the true geographic risk profile emerges: the Northern Territory and regional jurisdictions experience per-capita injury rates significantly higher than the national metropolitan baseline, driven by long-distance highway travel and remote road conditions.
+      </p>
+
+      <!-- Blank Chart Canvas Placeholder -->
+      <div class="chart-canvas-blank">
+        <div class="canvas-icon-wrap">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+            <line x1="8" y1="2" x2="8" y2="18"></line>
+            <line x1="16" y1="6" x2="16" y2="22"></line>
+          </svg>
+        </div>
+        <span class="canvas-badge">Visualization Canvas &bull; Section 4</span>
+        <div class="canvas-heading">State &amp; Territory Divergence: Absolute Counts vs. Per-Capita Rates</div>
+        <div class="canvas-sub">
+          Chart area reserved for geographic comparison across Australian States and Territories. Ready to allow toggling between absolute admissions and population-adjusted rates (per 100k residents).
+        </div>
+        <div class="canvas-candidate-pills">
+          <span class="candidate-pill">Candidate: Interactive Australian Choropleth Map</span>
+          <span class="candidate-pill">Candidate: Ranked Sorting Bar Chart with Rate Toggle</span>
+          <span class="candidate-pill">Candidate: Cartogram / Hexagonal Tile Map</span>
+        </div>
+      </div>
+
+      <div class="story-callout">
+        <strong>Per-Capita Contrast:</strong> The Northern Territory records an annual hospitalization rate exceeding 200 cases per 100,000 residents, contrasting with urbanized ACT at under 110 per 100,000.
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       8. STORY CHAPTER 5: REMOTENESS & FIRST NATIONS EQUITY
+       ============================================================ -->
+  <section class="story-chapter" id="act5">
+    <div class="chapter-card">
+      <div class="chapter-meta">
+        <span class="act-badge">Story Chapter 05</span>
+        <span class="chapter-theme-tag">Remoteness Tiers &amp; First Nations Equity</span>
+      </div>
+      <h2 class="chapter-title">The Distance Penalty: Remoteness Tiers &amp; Healthcare Equity</h2>
+      <p class="chapter-narrative">
+        Geography directly dictates injury severity and survivability. Two-thirds of all road crash hospitalisations take place in Major Cities where rapid paramedic response and specialized trauma centers are minutes away. In contrast, crashes occurring in Regional and Remote Australia involve higher speed limits, extended emergency transit times, and distinct vehicle occupant patterns. For First Nations communities, who reside disproportionately outside major metropolitan centers, targeted rural road safety policy remains a critical health equity imperative.
+      </p>
+
+      <!-- Blank Chart Canvas Placeholder -->
+      <div class="chart-canvas-blank">
+        <div class="canvas-icon-wrap">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+        </div>
+        <span class="canvas-badge">Visualization Canvas &bull; Section 5</span>
+        <div class="canvas-heading">Remoteness Classification &amp; First Nations Road Trauma</div>
+        <div class="canvas-sub">
+          Chart area reserved for Remoteness tiers (Major Cities, Inner/Outer Regional, Remote) and Indigenous road trauma distributions within participating jurisdictions.
+        </div>
+        <div class="canvas-candidate-pills">
+          <span class="candidate-pill">Candidate: Proportional Waffle Matrix</span>
+          <span class="candidate-pill">Candidate: Nested Remoteness Treemap</span>
+          <span class="candidate-pill">Candidate: Grouped Distribution Bars</span>
+        </div>
+      </div>
+
+      <div class="story-callout">
+        <strong>Data Governance Note:</strong> First Nations road trauma reporting is compiled across six Australian jurisdictions with reliable Indigenous identification. Small-cell suppression (&lt;5 counts) protects personal privacy.
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       9. TEAM SECTION
+       ============================================================ -->
+  <section class="team-section" id="team">
+    <div class="team-header">
+      <span class="prologue-tag" style="margin-bottom: 8px;">Project Contributors</span>
+      <h2 class="team-header-title">Project Team &amp; Responsibilities</h2>
+      <p class="team-header-sub">
+        COS30045 Data Visualisation Project &bull; Group <strong>DV03_T25</strong>
+      </p>
+    </div>
+
+    <div class="team-grid">
+      <!-- Member 1: Aisyah -->
+      <div class="team-box">
+        <div class="team-avatar avatar-aisyah">AF</div>
+        <div class="team-name">Aisyah Salsabila binti Fadillah</div>
+        <div class="team-id">Student ID: 1067634640</div>
+        <div class="team-role">Data Processing &amp; KNIME ETL</div>
+        <p class="team-desc">
+          Responsible for ingesting raw BITRE Excel workbooks, filtering traffic crash categories, deriving non-fatal metrics, managing small-cell privacy suppressions, and documenting data governance.
+        </p>
+      </div>
+
+      <!-- Member 2: Ishmael -->
+      <div class="team-box">
+        <div class="team-avatar avatar-ishmael">IR</div>
+        <div class="team-name">Muhammad Ishmael 'Aqib bin Roslee</div>
+        <div class="team-id">Student ID: 106763956</div>
+        <div class="team-role">D3.js &amp; Visual Storytelling</div>
+        <p class="team-desc">
+          Responsible for front-end architecture, responsive web storytelling layout, interaction design, D3 chart implementations, accessibility standards, and code deployment.
+        </p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============================================================
+     10. REAL-WEBSITE FOOTER (Clean public portal footer)
+     ============================================================ -->
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand-col">
+      <div class="footer-title">Australian Road Trauma Insights (2011–2021)</div>
+      <p class="footer-desc">
+        An interactive public health data visualization exploring non-fatal road traffic crash hospitalisations in Australia. Data sourced from the <a href="https://www.bitre.gov.au/publications/ongoing/hospitalised-injury" target="_blank" rel="noopener noreferrer">Bureau of Infrastructure and Transport Research Economics (BITRE)</a> and the <a href="https://www.aihw.gov.au/reports/injury/injury-in-australia/contents/ranked-causes" target="_blank" rel="noopener noreferrer">Australian Institute of Health and Welfare (AIHW)</a>.
+      </p>
+    </div>
+
+    <div class="footer-group-col">
+      <div class="footer-group-badge">
+        <span>COS30045 Data Visualisation Project</span>
+        <span class="grp-tag">Group DV03_T25</span>
+      </div>
+      <div class="footer-sub">
+        Authors: <strong>Aisyah Salsabila binti Fadillah</strong> &amp; <strong>Muhammad Ishmael 'Aqib bin Roslee</strong>
+      </div>
+      <div class="footer-uni">
+        Semester 2, 2026 &bull; Swinburne University of Technology
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
