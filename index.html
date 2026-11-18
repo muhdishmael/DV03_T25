@@ -1,330 +1,372 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Australian Road Trauma Insights | Group DV03_T25</title>
-  <link rel="stylesheet" href="css%20folder/style.css">
+  <title>Australian Road Trauma Insights | Public Health Visualisation (2011–2021)</title>
+  <meta name="description"
+    content="Interactive public health visualisations exploring 11 years of hospitalised road crash injuries in Australia (2011–2021).">
+
+  <!-- Google Fonts Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Main External Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- D3.js v7 CDN -->
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-  <script src="js%20folder/script.js" defer></script>
+
+  <!-- Main Application Script -->
+  <script src="js/script.js" defer></script>
 </head>
+
 <body>
 
-<section class="landing-cover">
-  <div class="landing-top-bar">
-    <div>
-      <span class="landing-badge">Public Health Data Story • BITRE 2011–2021</span>
+  <!-- Accessible Skip to Content Link -->
+  <a href="#story-prologue" class="skip-link">Skip to main content</a>
+
+  <!-- ============================================================
+       1. FULLSCREEN LANDING COVER (Professional Public Health Portal)
+       ============================================================ -->
+  <section class="landing-cover" aria-label="Cover Page">
+    <div class="landing-top-bar">
+      <div>
+        <span class="landing-badge">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          <span>Public Health Data Story • BITRE 2011–2021</span>
+        </span>
+      </div>
+      <div
+        style="font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 700; color: var(--text-muted);">
+        National Open Data Series
+      </div>
     </div>
-    <div class="landing-badge">Group DV03_T25</div>
-  </div>
 
-  <div class="landing-center">
-    <span class="landing-pill">COS30045 Data Visualisation Project</span>
-    <h1 class="landing-title">Australia's Road Trauma</h1>
-    <h2 class="landing-subtitle">Hospitalised Injuries from Road Crashes (2011–2021)</h2>
-    <p class="landing-description">
-      Behind every crash statistic is a patient, a family, and an ongoing burden on the healthcare system. Explore the untold human toll of non-fatal road trauma across Australia.
-    </p>
-    <a class="discover-btn" href="#story-prologue">Discover the Story</a>
-  </div>
-
-  <div class="landing-bottom-bar">
-    <p>@COS30045 Data Visualisation Project • Group DV03_T25</p>
-    <p class="landing-authors">by Aisyah Salsabila &amp; Muhammad Ishmael 'Aqib</p>
-  </div>
-</section>
-
-<nav class="sticky-nav">
-  <div class="container nav-inner">
-    <a class="nav-brand" href="#story-prologue">
-      <div class="brand-text">Australian Road Trauma Insights</div>
-      <div class="brand-tag">BITRE NON-FATAL SERIES</div>
-    </a>
-
-    <div class="nav-links">
-      <a class="nav-link" href="#story-prologue">Overview</a>
-      <a class="nav-link" href="#act1">1. National Arc</a>
-      <a class="nav-link" href="#act2">2. Vulnerable Users</a>
-      <a class="nav-link" href="#act3">3. Age &amp; Stay</a>
-      <a class="nav-link" href="#act4">4. Geography</a>
-      <a class="nav-link" href="#act5">5. Remoteness</a>
-      <a class="nav-link" href="#team">Team</a>
+    <div class="landing-center">
+      <span class="landing-pill">Australian Public Health Data Visualisation</span>
+      <h1 class="landing-title">Australia's Road Trauma</h1>
+      <h2 class="landing-subtitle">Hospitalised Injuries from Road Crashes (2011–2021)</h2>
+      <p class="landing-description">
+        Behind every crash statistic is a patient, a family, and an ongoing burden on the healthcare system. Explore 11
+        years of hospitalised injuries across Australia.
+      </p>
+      <a class="discover-btn" href="#story-prologue"
+        aria-label="Discover the visualisations and scroll down to overview">
+        <span>Explore Visualisations</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 5v14M5 12l7 7 7-7" />
+        </svg>
+      </a>
     </div>
-  </div>
-</nav>
 
-<div id="story-start" class="container">
+    <div class="landing-bottom-bar">
+      <p>Bureau of Infrastructure and Transport Research Economics (BITRE)</p>
+      <p>Australian Institute of Health and Welfare (AIHW)</p>
+    </div>
+  </section>
 
-  <header id="story-prologue" class="story-prologue">
-    <span class="prologue-tag">Project Brief &amp; Context</span>
-    <h2 class="prologue-title">Hospitalised Injuries from Road Crashes in Australia</h2>
-
-    <p class="prologue-text">
-      Road traffic accidents represent a significant public health issue in Australia. They are consistently identified as
-      <a href="https://www.aihw.gov.au/reports/injury/injury-in-australia/contents/ranked-causes" target="_blank" rel="noopener noreferrer">one of the leading causes of injury-related hospitalisation nationally</a>.
-      Each year, tens of thousands of individuals are admitted to hospital due to injuries sustained in road traffic accidents. While fatalities often receive substantial media and policy attention, non-fatal injuries constitute a considerably larger and ongoing burden on individuals, families, communities, and the healthcare system.
-    </p>
-
-    <p class="prologue-text">
-      Australian government agencies publish detailed, open-access datasets documenting hospitalised injuries resulting from road traffic accidents. These datasets include injury counts by year, jurisdiction, demographic characteristics, road user type, and selected population groups.
-    </p>
-
-    <div class="infographic-stats-grid">
-      <div class="stat-card">
-        <span class="stat-circle-badge badge-a">A</span>
+  <!-- ============================================================
+       2. STICKY EDITORIAL NAVIGATION
+       ============================================================ -->
+  <nav class="sticky-nav" aria-label="Story chapter navigation">
+    <div class="container nav-inner">
+      <a class="nav-brand" href="#story-prologue" aria-label="Home Overview">
+        <div class="brand-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
+        </div>
         <div>
-          <div class="stat-value">39,505</div>
-          <div class="stat-desc">Hospital admissions recorded in 2021</div>
+          <div class="brand-text">Australian Road Trauma Insights</div>
+          <div class="brand-tag">BITRE NON-FATAL SERIES</div>
         </div>
-      </div>
+      </a>
 
-      <div class="stat-card">
-        <span class="stat-circle-badge badge-b">B</span>
-        <div>
-          <div class="stat-value">35.2%</div>
-          <div class="stat-desc">Car drivers (largest acute trauma cohort)</div>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <span class="stat-circle-badge badge-c">C</span>
-        <div>
-          <div class="stat-value">+42.1%</div>
-          <div class="stat-desc">Surge in cyclist hospitalisations (10-Yr)</div>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <span class="stat-circle-badge badge-d">D</span>
-        <div>
-          <div class="stat-value">11.8 Days</div>
-          <div class="stat-desc">Average acute bed stay for patients ≥75</div>
-        </div>
+      <div class="nav-links" role="menubar">
+        <a class="nav-link" href="#story-prologue" role="menuitem">Overview</a>
+        <a class="nav-link" href="#act1" role="menuitem">Q1. National Trend</a>
+        <a class="nav-link" href="#act2" role="menuitem">Q2. Circumstances</a>
+        <a class="nav-link" href="#act3" role="menuitem">Q3. Jurisdictions</a>
+        <a class="nav-link" href="#act4" role="menuitem">Q4. Remoteness</a>
+        <a class="nav-link" href="#act5" role="menuitem">Q5. First Nations</a>
+        <a class="nav-link" href="#team" role="menuitem">Team</a>
       </div>
     </div>
-  </header>
+  </nav>
 
-  <section id="act1" class="story-chapter">
-    <div class="chapter-card">
-      <div class="chapter-meta">
-        <span class="act-badge">Story Chapter 01</span>
-        <span class="chapter-theme-tag">National Longitudinal Trajectory (2011–2021)</span>
-      </div>
+  <!-- MAIN CONTENT CONTAINER -->
+  <main id="story-start" class="container">
 
-      <h2 class="chapter-title">Beyond the Fatalities: An 11-Year National Trajectory</h2>
+    <!-- ============================================================
+         3. PROLOGUE & PROJECT BRIEF
+         ============================================================ -->
+    <header id="story-prologue" class="story-prologue" tabindex="-1">
+      <h2 class="prologue-title">Hospitalised Injuries from Road Crashes in Australia</h2>
 
-      <p class="chapter-narrative">
-        Over the decade spanning 2011 to 2021, road crash hospitalisations in Australia approached 40,000 acute admissions annually. While road safety roadmaps celebrate declines in road deaths, non-fatal trauma tells an entirely different story. Yet interpreting this decade requires peering beneath the surface: two critical reporting breaks in 2012 and 2017 restructured hospital reporting and clinical admission criteria, while nationwide stay-at-home public health directions created a distinct drop in travel exposure during 2020.
+      <p class="prologue-text">
+        Road traffic accidents represent a significant public health issue in Australia. They are consistently
+        identified as
+        <a href="https://www.aihw.gov.au/reports/injury/injury-in-australia/contents/ranked-causes" target="_blank"
+          rel="noopener noreferrer">one of the leading causes of injury-related hospitalisation nationally</a>.
+        Each year, tens of thousands of individuals are admitted to hospital due to injuries sustained in road traffic
+        accidents. While fatalities often receive substantial media and policy attention, non-fatal injuries constitute
+        a considerably larger and ongoing burden on individuals, families, communities, and the healthcare system.
       </p>
 
-      <div id="canvas-act1" class="chart-canvas-blank">
-        <span class="canvas-badge">Visualization Canvas • Section 1</span>
-        <h3 class="canvas-heading">National Trend &amp; Policy Reporting Breaks</h3>
-        <p class="canvas-sub">
-          Chart area reserved for temporal trajectory (2011–2021). Ready to embed interactive markers for the 2012 &amp; 2017 hospital definition updates and the 2020 COVID contraction.
-        </p>
-        <div class="canvas-candidate-pills">
-          <span class="candidate-pill">Candidate: Annotated Multi-Line Chart</span>
-          <span class="candidate-pill">Candidate: Longitudinal Stepped Area</span>
-          <span class="candidate-pill">Candidate: Horizon Chart</span>
+      <p class="prologue-text">
+        Australian government agencies publish detailed, open-access datasets documenting hospitalised injuries
+        resulting from road traffic accidents. These datasets include injury counts by year, jurisdiction, demographic
+        characteristics, road user type, and selected population groups.
+      </p>
+
+      <!-- 4 High-Impact KPI Stat Cards -->
+      <div class="infographic-stats-grid">
+        <div class="stat-card">
+          <span class="stat-circle-badge badge-a" aria-hidden="true">A</span>
+          <div>
+            <div class="stat-value">39,505</div>
+            <div class="stat-desc">Admissions in 2021 (+16.1% over 10 yrs)</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-circle-badge badge-b" aria-hidden="true">B</span>
+          <div>
+            <div class="stat-value">41.0%</div>
+            <div class="stat-desc">Cars &amp; trucks are the largest crash cohort</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-circle-badge badge-c" aria-hidden="true">C</span>
+          <div>
+            <div class="stat-value">66.7%</div>
+            <div class="stat-desc">Concentrated within Major Cities</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-circle-badge badge-d" aria-hidden="true">D</span>
+          <div>
+            <div class="stat-value">59.2%</div>
+            <div class="stat-desc">First Nations trauma is youth &amp; young adults</div>
+          </div>
         </div>
       </div>
+    </header>
 
-      <div class="story-callout">
-        <strong>Reporting Caveat:</strong> The noticeable increases in 2012 and 2017 reflect institutional reporting updates under national health reform agreements, not a sudden surge in underlying road crashes.
-      </div>
-    </div>
-  </section>
+    <!-- ============================================================
+         ACT 1: QUESTION 1 (NATIONAL TREND) - LINE CHART
+         ============================================================ -->
+    <section id="act1" class="story-chapter" aria-labelledby="heading-act1">
+      <div class="chapter-card">
+        <div class="chapter-meta">
+          <span class="act-badge">Question 01</span>
+          <span class="chart-type-tag">Chart Type: Line Chart</span>
+          <span class="chapter-theme-tag">National Long-Term Trajectory (2011–2021)</span>
+        </div>
 
-  <section id="act2" class="story-chapter">
-    <div class="chapter-card">
-      <div class="chapter-meta">
-        <span class="act-badge">Story Chapter 02</span>
-        <span class="chapter-theme-tag">Road User Categories &amp; Mode Shift</span>
-      </div>
+        <h2 id="heading-act1" class="chapter-title">The 11-Year Arc: National Road Trauma Trend</h2>
 
-      <h2 class="chapter-title">The Vulnerability Shift: The Quiet Surge in Two-Wheeled Trauma</h2>
+        <div class="chapter-question">
+          <strong>Q1 (National Trend):</strong> How did the national total of road-crash hospitalisations change across
+          Australia from 2011 to 2021, and what trends can be observed over this period?
+        </div>
 
-      <p class="chapter-narrative">
-        Enclosed vehicle drivers still constitute the largest absolute volume of road trauma (roughly 35% of all admissions), but the composition of trauma is undergoing a fundamental shift. As Australian cities embrace active transit, bicycle commuting, and gig-economy motorcycle delivery, vulnerable two-wheeled users have recorded the steepest percentage increases in acute injury hospitalisations over the past ten years.
-      </p>
-
-      <div id="canvas-act2" class="chart-canvas-blank">
-        <span class="canvas-badge">Visualization Canvas • Section 2</span>
-        <h3 class="canvas-heading">Road User Vulnerability &amp; Compositional Shift</h3>
-        <p class="canvas-sub">
-          Chart area reserved for comparing road user categories (Drivers, Motorcyclists, Pedal Cyclists, Pedestrians, Passengers). Ready to visualize net absolute differences (Δ) alongside percentage share shifts.
-        </p>
-        <div class="canvas-candidate-pills">
-          <span class="candidate-pill">Candidate: Diverging Delta Bar Chart</span>
-          <span class="candidate-pill">Candidate: 100% Stacked Mode Share Stream</span>
-          <span class="candidate-pill">Candidate: Dumbbell Slope Graph</span>
+        <!-- Live Connected D3 Line Chart Container -->
+        <div id="canvas-act1" class="chart-container-box" role="region"
+          aria-label="National trend line chart and data table">
+          <!-- Populated dynamically by script.js -->
         </div>
       </div>
+    </section>
 
-      <div class="story-callout">
-        <strong>Mode Shift Insight:</strong> Pedal cyclist admissions increased by +42.1% between 2012 and 2021, and motorcyclists by +26.8%, far outpacing car occupant injury growth rates.
-      </div>
-    </div>
-  </section>
+    <!-- ============================================================
+         ACT 2: QUESTION 2 (CRASH CIRCUMSTANCES) - DIVERGING BAR CHART
+         ============================================================ -->
+    <section id="act2" class="story-chapter" aria-labelledby="heading-act2">
+      <div class="chapter-card">
+        <div class="chapter-meta">
+          <span class="act-badge">Question 02</span>
+          <span class="chart-type-tag">Chart Type: Diverging Bar Chart</span>
+          <span class="chapter-theme-tag">Crash Circumstances &amp; Vehicle Categories</span>
+        </div>
 
-  <section id="act3" class="story-chapter">
-    <div class="chapter-card">
-      <div class="chapter-meta">
-        <span class="act-badge">Story Chapter 03</span>
-        <span class="chapter-theme-tag">Demographic Disparity &amp; Bed Occupancy</span>
-      </div>
+        <h2 id="heading-act2" class="chapter-title">Crash Circumstances: Which Crash Types Grew the Most?</h2>
 
-      <h2 class="chapter-title">The Age Divide: Peak Crash Volumes vs. Prolonged Hospital Stays</h2>
+        <div class="chapter-question">
+          <strong>Q2 (Crash Circumstances):</strong> Which crash circumstances contributed the most to road-crash
+          hospitalisations, and how did their respective hospitalisation counts change over the years?
+        </div>
 
-      <p class="chapter-narrative">
-        Road trauma impacts demographics in two distinctly different dimensions: frequency versus severity. Young adults (aged 17–25), especially young men, sustain the highest sheer volume of acute collision admissions. In contrast, the acute healthcare burden—measured by length of hospital stay (bed days)—falls disproportionately on older Australians aged 75 and over, whose complex fractures and recovery periods average nearly 12 bed days per hospitalisation.
-      </p>
-
-      <div id="canvas-act3" class="chart-canvas-blank">
-        <span class="canvas-badge">Visualization Canvas • Section 3</span>
-        <h3 class="canvas-heading">Age × Biological Sex Disparities &amp; Hospital Bed Days</h3>
-        <p class="canvas-sub">
-          Chart area reserved for demographic analysis. Ready to contrast Male vs. Female injury volumes across age brackets alongside the secondary metric of acute hospital bed occupancy.
-        </p>
-        <div class="canvas-candidate-pills">
-          <span class="candidate-pill">Candidate: Bi-Directional Population Butterfly</span>
-          <span class="candidate-pill">Candidate: Dual-Axis Grouped Bar + Dot Plot</span>
-          <span class="candidate-pill">Candidate: Demographic Heatmap Matrix</span>
+        <!-- Live Connected D3 Diverging Bar Chart Container -->
+        <div id="canvas-act2" class="chart-container-box" role="region"
+          aria-label="Crash circumstances diverging bar chart and data table">
+          <!-- Populated dynamically by script.js -->
         </div>
       </div>
+    </section>
 
-      <div class="story-callout">
-        <strong>Healthcare Capacity Insight:</strong> While patients ≥75 represent a smaller percentage of total crash volume, their extended stays mean they occupy significant acute ward capacity across public health networks.
-      </div>
-    </div>
-  </section>
+    <!-- ============================================================
+         ACT 3: QUESTION 3 (JURISDICTIONAL DIFFERENCES) - CHOROPLETH MAP
+         ============================================================ -->
+    <section id="act3" class="story-chapter" aria-labelledby="heading-act3">
+      <div class="chapter-card">
+        <div class="chapter-meta">
+          <span class="act-badge">Question 03</span>
+          <span class="chart-type-tag">Chart Type: Choropleth Map</span>
+          <span class="chapter-theme-tag">States &amp; Territories Comparison</span>
+        </div>
 
-  <section id="act4" class="story-chapter">
-    <div class="chapter-card">
-      <div class="chapter-meta">
-        <span class="act-badge">Story Chapter 04</span>
-        <span class="chapter-theme-tag">State &amp; Territory Comparison</span>
-      </div>
+        <h2 id="heading-act3" class="chapter-title">Jurisdictional Differences Across Australia</h2>
 
-      <h2 class="chapter-title">The Geographic Paradox: Why High Population Doesn't Mean High Risk</h2>
+        <div class="chapter-question">
+          <strong>Q3 (Jurisdictional Differences):</strong> How did road-crash hospitalisation counts vary across
+          Australian states and territories, and which jurisdictions recorded the highest numbers over the selected
+          years?
+        </div>
 
-      <p class="chapter-narrative">
-        Looking at raw counts alone gives a misleading picture: New South Wales, Victoria, and Queensland account for the majority of admissions purely due to resident population scale. Once normalized by population, however, the true geographic risk profile emerges: the Northern Territory and regional jurisdictions experience per-capita injury rates significantly higher than the national metropolitan baseline, driven by long-distance highway travel and remote road conditions.
-      </p>
-
-      <div id="canvas-act4" class="chart-canvas-blank">
-        <span class="canvas-badge">Visualization Canvas • Section 4</span>
-        <h3 class="canvas-heading">State &amp; Territory Divergence: Absolute Counts vs. Per-Capita Rates</h3>
-        <p class="canvas-sub">
-          Chart area reserved for geographic comparison across Australian States and Territories. Ready to allow toggling between absolute admissions and population-adjusted rates (per 100k residents).
-        </p>
-        <div class="canvas-candidate-pills">
-          <span class="candidate-pill">Candidate: Interactive Australian Choropleth Map</span>
-          <span class="candidate-pill">Candidate: Ranked Sorting Bar Chart with Rate Toggle</span>
-          <span class="candidate-pill">Candidate: Cartogram / Hexagonal Tile Map</span>
+        <!-- Live Connected D3 Choropleth Map Container -->
+        <div id="canvas-act3" class="chart-container-box" role="region"
+          aria-label="Australia jurisdictions choropleth map and data table">
+          <!-- Populated dynamically by script.js -->
         </div>
       </div>
+    </section>
 
-      <div class="story-callout">
-        <strong>Per-Capita Contrast:</strong> The Northern Territory records an annual hospitalization rate exceeding 200 cases per 100,000 residents, contrasting with urbanized ACT at under 110 per 100,000.
-      </div>
-    </div>
-  </section>
+    <!-- ============================================================
+         ACT 4: QUESTION 4 (REMOTENESS DISTRIBUTION) - HEATMAP
+         ============================================================ -->
+    <section id="act4" class="story-chapter" aria-labelledby="heading-act4">
+      <div class="chapter-card">
+        <div class="chapter-meta">
+          <span class="act-badge">Question 04</span>
+          <span class="chart-type-tag">Chart Type: Heatmap</span>
+          <span class="chapter-theme-tag">Major Cities vs. Regional vs. Remote</span>
+        </div>
 
-  <section id="act5" class="story-chapter">
-    <div class="chapter-card">
-      <div class="chapter-meta">
-        <span class="act-badge">Story Chapter 05</span>
-        <span class="chapter-theme-tag">Remoteness Tiers &amp; First Nations Equity</span>
-      </div>
+        <h2 id="heading-act4" class="chapter-title">Remoteness Distribution: Major Cities, Regional and Remote</h2>
 
-      <h2 class="chapter-title">The Distance Penalty: Remoteness Tiers &amp; Healthcare Equity</h2>
+        <div class="chapter-question">
+          <strong>Q4 (Remoteness Distribution):</strong> How did road-crash hospitalisation counts differ across Major
+          Cities, Regional and Remote areas, and how did these patterns change from year to year?
+        </div>
 
-      <p class="chapter-narrative">
-        Geography directly dictates injury severity and survivability. Two-thirds of all road crash hospitalisations take place in Major Cities where rapid paramedic response and specialized trauma centers are minutes away. In contrast, crashes occurring in Regional and Remote Australia involve higher speed limits, extended emergency transit times, and distinct vehicle occupant patterns. For First Nations communities, who reside disproportionately outside major metropolitan centers, targeted rural road safety policy remains a critical health equity imperative.
-      </p>
-
-      <div id="canvas-act5" class="chart-canvas-blank">
-        <span class="canvas-badge">Visualization Canvas • Section 5</span>
-        <h3 class="canvas-heading">Remoteness Classification &amp; First Nations Road Trauma</h3>
-        <p class="canvas-sub">
-          Chart area reserved for Remoteness tiers (Major Cities, Inner/Outer Regional, Remote) and Indigenous road trauma distributions within participating jurisdictions.
-        </p>
-        <div class="canvas-candidate-pills">
-          <span class="candidate-pill">Candidate: Proportional Waffle Matrix</span>
-          <span class="candidate-pill">Candidate: Nested Remoteness Treemap</span>
-          <span class="candidate-pill">Candidate: Grouped Distribution Bars</span>
+        <!-- Live Connected D3 Heatmap Container -->
+        <div id="canvas-act4" class="chart-container-box" role="region"
+          aria-label="Remoteness distribution heatmap and data table">
+          <!-- Populated dynamically by script.js -->
         </div>
       </div>
+    </section>
 
-      <div class="story-callout">
-        <strong>Data Governance Note:</strong> First Nations road trauma reporting is compiled across six Australian jurisdictions with reliable Indigenous identification. Small-cell suppression (&lt;5 counts) protects personal privacy.
+    <!-- ============================================================
+         ACT 5: QUESTION 5 (FIRST NATIONS AGE GROUP ANALYSIS) - SMALL MULTIPLES
+         ============================================================ -->
+    <section id="act5" class="story-chapter" aria-labelledby="heading-act5">
+      <div class="chapter-card">
+        <div class="chapter-meta">
+          <span class="act-badge">Question 05</span>
+          <span class="chart-type-tag">Chart Type: Small Multiples (Area Charts)</span>
+          <span class="chapter-theme-tag">First Nations Road Safety &amp; Age Cohorts</span>
+        </div>
+
+        <h2 id="heading-act5" class="chapter-title">First Nations Road Safety: Distribution by Age Group</h2>
+
+        <div class="chapter-question">
+          <strong>Q5 (First Nations Age Group Analysis):</strong> How were road-crash hospitalisations among First
+          Nations people distributed across different age groups, and how did the annual hospitalisation counts change
+          over time?
+        </div>
+
+        <!-- Live Connected D3 Small Multiples Container -->
+        <div id="canvas-act5" class="chart-container-box" role="region"
+          aria-label="First Nations age groups small multiples area charts and data table">
+          <!-- Populated dynamically by script.js -->
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="team" class="team-section">
-    <div class="team-header">
-      <span>Project Contributors</span>
-      <h2 class="team-header-title">Project Team &amp; Responsibilities</h2>
-      <p class="team-header-sub">
-        COS30045 Data Visualisation Project • Group <strong>DV03_T25</strong>
-      </p>
-    </div>
-
-    <div class="team-grid">
-      <div class="team-box">
-        <div class="team-avatar avatar-aisyah">AF</div>
-        <div class="team-name">Aisyah Salsabila binti Fadillah</div>
-        <div class="team-id">Student ID: 1067634640</div>
-        <div class="team-role">Data Processing &amp; KNIME ETL</div>
-        <p class="team-desc">
-          Responsible for ingesting raw BITRE Excel workbooks, filtering traffic crash categories, deriving non-fatal metrics, managing small-cell privacy suppressions, and documenting data governance.
+    <!-- ============================================================
+         6. TEAM SECTION (Group and Student Details Placed Here)
+         ============================================================ -->
+    <section id="team" class="team-section" aria-labelledby="team-heading">
+      <div class="team-header">
+        <span class="prologue-tag">Project Contributors</span>
+        <h2 id="team-heading" class="team-header-title">Project Team &amp; Responsibilities</h2>
+        <p class="team-header-sub">
+          COS30045 Data Visualisation Project • Group <strong>DV03_T25</strong>
         </p>
       </div>
 
-      <div class="team-box">
-        <div class="team-avatar avatar-ishmael">IR</div>
-        <div class="team-name">Muhammad Ishmael 'Aqib bin Roslee</div>
-        <div class="team-id">Student ID: 106763956</div>
-        <div class="team-role">D3.js &amp; Visual Storytelling</div>
-        <p class="team-desc">
-          Responsible for front-end architecture, responsive web storytelling layout, interaction design, D3 chart implementations, accessibility standards, and code deployment.
+      <div class="team-grid">
+        <div class="team-box">
+          <div class="team-avatar avatar-aisyah" aria-hidden="true">AF</div>
+          <div class="team-name">Aisyah Salsabila binti Fadillah</div>
+          <div class="team-id">Student ID: 1067634640</div>
+          <div class="team-role">Data Processing &amp; KNIME ETL</div>
+          <p class="team-desc">
+            Responsible for ingesting raw BITRE Excel workbooks, filtering traffic crash categories, deriving non-fatal
+            metrics, managing small-cell privacy suppressions, and documenting data governance.
+          </p>
+        </div>
+
+        <div class="team-box">
+          <div class="team-avatar avatar-ishmael" aria-hidden="true">IR</div>
+          <div class="team-name">Muhammad Ishmael 'Aqib bin Roslee</div>
+          <div class="team-id">Student ID: 106763956</div>
+          <div class="team-role">D3.js &amp; Visual Storytelling</div>
+          <p class="team-desc">
+            Responsible for front-end architecture, responsive web visualisations, interaction design, accessible D3
+            chart implementations, and WCAG standards.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       7. REAL-WEBSITE FOOTER
+       ============================================================ -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container footer-inner">
+      <div class="footer-brand-col">
+        <div class="footer-title">Australian Road Trauma Insights (2011–2021)</div>
+        <p class="footer-desc">
+          An interactive public health data visualization exploring non-fatal road traffic crash hospitalisations in
+          Australia. Data sourced from the
+          <a href="https://www.bitre.gov.au/publications/ongoing/hospitalised-injury" target="_blank"
+            rel="noopener noreferrer">Bureau of Infrastructure and Transport Research Economics (BITRE)</a>
+          and the
+          <a href="https://www.aihw.gov.au/reports/injury/injury-in-australia/contents/ranked-causes" target="_blank"
+            rel="noopener noreferrer">Australian Institute of Health and Welfare (AIHW)</a>.
         </p>
       </div>
-    </div>
-  </section>
 
-</div>
-
-<footer class="site-footer">
-  <div class="container footer-inner">
-    <div class="footer-brand-col">
-      <div class="footer-title">Australian Road Trauma Insights (2011–2021)</div>
-      <p class="footer-desc">
-        An interactive public health data visualization exploring non-fatal road traffic crash hospitalisations in Australia. Data sourced from the
-        <a href="https://www.bitre.gov.au/publications/ongoing/hospitalised-injury" target="_blank" rel="noopener noreferrer">Bureau of Infrastructure and Transport Research Economics (BITRE)</a>
-        and the
-        <a href="https://www.aihw.gov.au/reports/injury/injury-in-australia/contents/ranked-causes" target="_blank" rel="noopener noreferrer">Australian Institute of Health and Welfare (AIHW)</a>.
-      </p>
-    </div>
-
-    <div class="footer-group-col">
-      <div class="footer-group-badge">
-        <span>COS30045 Data Visualisation Project</span>
-        <span class="grp-tag">Group DV03_T25</span>
-      </div>
-      <div class="footer-sub">
-        Authors: <strong>Aisyah Salsabila binti Fadillah</strong> &amp;
-        <strong>Muhammad Ishmael 'Aqib bin Roslee</strong>
-      </div>
-      <div class="footer-uni">
-        Semester 2, 2026 • Swinburne University of Technology
+      <div class="footer-group-col">
+        <div class="footer-group-badge">
+          <span>COS30045 Data Visualisation Project</span>
+          <span class="grp-tag">Group DV03_T25</span>
+        </div>
+        <div class="footer-sub">
+          Authors: <strong>Aisyah Salsabila binti Fadillah</strong> &amp;
+          <strong>Muhammad Ishmael 'Aqib bin Roslee</strong>
+        </div>
+        <div class="footer-uni">
+          Semester 2, 2026 • Swinburne University of Technology
+        </div>
       </div>
     </div>
-  </div>
-</footer>
+  </footer>
 
 </body>
+
 </html>

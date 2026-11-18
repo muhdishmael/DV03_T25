@@ -3,171 +3,857 @@
  * AUSTRALIAN ROAD TRAUMA INSIGHTS (BITRE 2011–2021)
  * COS30045 Data Visualisation Project | Group DV03_T25
  * Main Application Script: js/script.js
+ * Visualizations:
+ *   Q1: Line Chart
+ *   Q2: Diverging Bar Chart
+ *   Q3: Choropleth Map
+ *   Q4: Heatmap
+ *   Q5: Small Multiples (Area Charts)
+ * Accessibility: WCAG 2.1 AA+ Compliant
  * ============================================================
  */
 
-const nationalTrendCsv = `Calendar year,Hospitalisations
-2011,34033
-2012,34024
-2013,35001
-2014,35515
-2015,37082
-2016,38963
-2017,39339
-2018,39590
-2019,39866
-2020,37966
-2021,39505`;
+// Embedded Data Fallbacks for instant file:/// & web-server compatibility
+const DATA_FALLBACKS = {
+  q1: [
+    { year: 2011, value: 34033 }, { year: 2012, value: 34024 }, { year: 2013, value: 35001 },
+    { year: 2014, value: 35515 }, { year: 2015, value: 37082 }, { year: 2016, value: 38963 },
+    { year: 2017, value: 39339 }, { year: 2018, value: 39590 }, { year: 2019, value: 39866 },
+    { year: 2020, value: 37966 }, { year: 2021, value: 39505 }
+  ],
+  q2: [
+    { year: 2011, "2- or 3- wheeled motor vehicle": 246, "Car, pick-up truck or van": 14014, "Fixed or stationary object": 4933, "Heavy transport vehicle or bus": 1069, "Non-collision transport accident": 8643, "Other and unspecified transport accidents": 4416, "Other non-motor vehicle": 46, "Pedal cycle": 280, "Pedestrian or animal": 342, "Train": 44 },
+    { year: 2012, "2- or 3- wheeled motor vehicle": 217, "Car, pick-up truck or van": 13786, "Fixed or stationary object": 4899, "Heavy transport vehicle or bus": 1021, "Non-collision transport accident": 8815, "Other and unspecified transport accidents": 4515, "Other non-motor vehicle": 43, "Pedal cycle": 321, "Pedestrian or animal": 380, "Train": 27 },
+    { year: 2013, "2- or 3- wheeled motor vehicle": 233, "Car, pick-up truck or van": 13999, "Fixed or stationary object": 4978, "Heavy transport vehicle or bus": 1104, "Non-collision transport accident": 9417, "Other and unspecified transport accidents": 4330, "Other non-motor vehicle": 50, "Pedal cycle": 431, "Pedestrian or animal": 434, "Train": 25 },
+    { year: 2014, "2- or 3- wheeled motor vehicle": 244, "Car, pick-up truck or van": 14258, "Fixed or stationary object": 5062, "Heavy transport vehicle or bus": 1077, "Non-collision transport accident": 9639, "Other and unspecified transport accidents": 4361, "Other non-motor vehicle": 60, "Pedal cycle": 366, "Pedestrian or animal": 424, "Train": 24 },
+    { year: 2015, "2- or 3- wheeled motor vehicle": 267, "Car, pick-up truck or van": 15318, "Fixed or stationary object": 5304, "Heavy transport vehicle or bus": 1074, "Non-collision transport accident": 9870, "Other and unspecified transport accidents": 4347, "Other non-motor vehicle": 46, "Pedal cycle": 418, "Pedestrian or animal": 406, "Train": 32 },
+    { year: 2016, "2- or 3- wheeled motor vehicle": 288, "Car, pick-up truck or van": 16551, "Fixed or stationary object": 5607, "Heavy transport vehicle or bus": 1138, "Non-collision transport accident": 9911, "Other and unspecified transport accidents": 4553, "Other non-motor vehicle": 56, "Pedal cycle": 401, "Pedestrian or animal": 420, "Train": 38 },
+    { year: 2017, "2- or 3- wheeled motor vehicle": 255, "Car, pick-up truck or van": 16966, "Fixed or stationary object": 5451, "Heavy transport vehicle or bus": 1183, "Non-collision transport accident": 10089, "Other and unspecified transport accidents": 4395, "Other non-motor vehicle": 75, "Pedal cycle": 432, "Pedestrian or animal": 469, "Train": 24 },
+    { year: 2018, "2- or 3- wheeled motor vehicle": 236, "Car, pick-up truck or van": 16805, "Fixed or stationary object": 5558, "Heavy transport vehicle or bus": 1112, "Non-collision transport accident": 10368, "Other and unspecified transport accidents": 4452, "Other non-motor vehicle": 102, "Pedal cycle": 416, "Pedestrian or animal": 501, "Train": 40 },
+    { year: 2019, "2- or 3- wheeled motor vehicle": 299, "Car, pick-up truck or van": 17109, "Fixed or stationary object": 5539, "Heavy transport vehicle or bus": 1072, "Non-collision transport accident": 10040, "Other and unspecified transport accidents": 4750, "Other non-motor vehicle": 79, "Pedal cycle": 464, "Pedestrian or animal": 488, "Train": 26 },
+    { year: 2020, "2- or 3- wheeled motor vehicle": 298, "Car, pick-up truck or van": 14668, "Fixed or stationary object": 5656, "Heavy transport vehicle or bus": 893, "Non-collision transport accident": 10905, "Other and unspecified transport accidents": 4682, "Other non-motor vehicle": 55, "Pedal cycle": 391, "Pedestrian or animal": 395, "Train": 23 },
+    { year: 2021, "2- or 3- wheeled motor vehicle": 300, "Car, pick-up truck or van": 16192, "Fixed or stationary object": 5596, "Heavy transport vehicle or bus": 1020, "Non-collision transport accident": 10728, "Other and unspecified transport accidents": 4644, "Other non-motor vehicle": 64, "Pedal cycle": 451, "Pedestrian or animal": 481, "Train": 29 }
+  ],
+  q3: [
+    { year: 2011, ACT: 537, NSW: 10618, NT: 456, QLD: 6322, SA: 2359, TAS: 493, VIC: 9326, WA: 3442 },
+    { year: 2012, ACT: 601, NSW: 11121, NT: 496, QLD: 6813, SA: 2311, TAS: 536, VIC: 8098, WA: 3493 },
+    { year: 2013, ACT: 573, NSW: 11421, NT: 561, QLD: 7821, SA: 2221, TAS: 570, VIC: 7784, WA: 3475 },
+    { year: 2014, ACT: 542, NSW: 11313, NT: 575, QLD: 7725, SA: 2381, TAS: 646, VIC: 8523, WA: 3154 },
+    { year: 2015, ACT: 700, NSW: 11084, NT: 691, QLD: 8306, SA: 2467, TAS: 677, VIC: 9198, WA: 3183 },
+    { year: 2016, ACT: 654, NSW: 11474, NT: 709, QLD: 8702, SA: 2654, TAS: 657, VIC: 10360, WA: 3031 },
+    { year: 2017, ACT: 632, NSW: 11016, NT: 703, QLD: 9134, SA: 2394, TAS: 659, VIC: 10794, WA: 3195 },
+    { year: 2018, ACT: 712, NSW: 9794, NT: 832, QLD: 9381, SA: 2489, TAS: 781, VIC: 11453, WA: 3274 },
+    { year: 2019, ACT: 665, NSW: 9942, NT: 656, QLD: 9515, SA: 2457, TAS: 708, VIC: 11392, WA: 3534 },
+    { year: 2020, ACT: 629, NSW: 9274, NT: 787, QLD: 9801, SA: 2503, TAS: 778, VIC: 9884, WA: 3636 },
+    { year: 2021, ACT: 740, NSW: 9003, NT: 710, QLD: 10447, SA: 2632, TAS: 805, VIC: 11130, WA: 3568 }
+  ],
+  q4: [
+    { year: 2011, majorCities: 21870, regional: 10461, remote: 1156 },
+    { year: 2012, majorCities: 21812, regional: 10321, remote: 1263 },
+    { year: 2013, majorCities: 23134, regional: 9984, remote: 1220 },
+    { year: 2014, majorCities: 23481, regional: 10135, remote: 1153 },
+    { year: 2015, majorCities: 24557, regional: 10502, remote: 1178 },
+    { year: 2016, majorCities: 26344, regional: 10662, remote: 1144 },
+    { year: 2017, majorCities: 26279, regional: 11038, remote: 1054 },
+    { year: 2018, majorCities: 26168, regional: 11209, remote: 1200 },
+    { year: 2019, majorCities: 26555, regional: 11045, remote: 1099 },
+    { year: 2020, majorCities: 24925, regional: 11054, remote: 1172 },
+    { year: 2021, majorCities: 26355, regional: 11407, remote: 1114 }
+  ],
+  q5: [
+    { year: 2011, "0-7": 92, "8-16": 204, "17-25": 335, "26-39": 286, "40-64": 226, "65+": 24 },
+    { year: 2012, "0-7": 81, "8-16": 229, "17-25": 385, "26-39": 372, "40-64": 315, "65+": 22 },
+    { year: 2013, "0-7": 78, "8-16": 242, "17-25": 422, "26-39": 366, "40-64": 279, "65+": 27 },
+    { year: 2014, "0-7": 49, "8-16": 220, "17-25": 422, "26-39": 388, "40-64": 314, "65+": 14 },
+    { year: 2015, "0-7": 79, "8-16": 239, "17-25": 420, "26-39": 449, "40-64": 372, "65+": 41 },
+    { year: 2016, "0-7": 89, "8-16": 254, "17-25": 501, "26-39": 422, "40-64": 374, "65+": 29 },
+    { year: 2017, "0-7": 81, "8-16": 251, "17-25": 506, "26-39": 435, "40-64": 418, "65+": 42 },
+    { year: 2018, "0-7": 70, "8-16": 253, "17-25": 607, "26-39": 542, "40-64": 411, "65+": 47 },
+    { year: 2019, "0-7": 78, "8-16": 248, "17-25": 521, "26-39": 539, "40-64": 411, "65+": 59 },
+    { year: 2020, "0-7": 82, "8-16": 295, "17-25": 705, "26-39": 659, "40-64": 496, "65+": 53 },
+    { year: 2021, "0-7": 86, "8-16": 291, "17-25": 686, "26-39": 597, "40-64": 515, "65+": 45 }
+  ]
+};
+
+// Simplified Australia Geographic Boundaries GeoJSON for Choropleth Map (Q3)
+const AUSTRALIA_GEOJSON = {
+  type: "FeatureCollection",
+  features: [
+    {
+      type: "Feature",
+      id: "WA",
+      properties: { name: "Western Australia", code: "WA" },
+      geometry: {
+        type: "Polygon",
+        coordinates: [[
+          [129.0, -14.8], [129.0, -31.7], [124.0, -33.9], [121.9, -33.9],
+          [115.1, -34.3], [115.7, -32.0], [114.1, -28.8], [113.1, -25.8],
+          [114.1, -21.8], [117.0, -20.6], [118.6, -20.3], [122.2, -18.0],
+          [123.0, -16.4], [128.3, -14.8], [129.0, -14.8]
+        ]]
+      }
+    },
+    {
+      type: "Feature",
+      id: "NT",
+      properties: { name: "Northern Territory", code: "NT" },
+      geometry: {
+        type: "Polygon",
+        coordinates: [[
+          [129.0, -14.8], [130.8, -12.4], [133.5, -11.5], [136.8, -12.2],
+          [136.0, -14.0], [138.0, -16.5], [138.0, -26.0], [129.0, -26.0],
+          [129.0, -14.8]
+        ]]
+      }
+    },
+    {
+      type: "Feature",
+      id: "SA",
+      properties: { name: "South Australia", code: "SA" },
+      geometry: {
+        type: "Polygon",
+        coordinates: [[
+          [129.0, -26.0], [141.0, -26.0], [141.0, -38.0], [138.5, -35.6],
+          [137.0, -35.2], [137.8, -32.5], [136.0, -35.0], [133.0, -32.0],
+          [129.0, -31.7], [129.0, -26.0]
+        ]]
+      }
+    },
+    {
+      type: "Feature",
+      id: "QLD",
+      properties: { name: "Queensland", code: "QLD" },
+      geometry: {
+        type: "Polygon",
+        coordinates: [[
+          [138.0, -16.5], [141.0, -17.5], [142.5, -10.7], [145.8, -16.9],
+          [146.8, -19.2], [149.2, -21.1], [153.3, -25.0], [153.1, -27.5],
+          [153.5, -28.2], [141.0, -29.0], [141.0, -26.0], [138.0, -26.0],
+          [138.0, -16.5]
+        ]]
+      }
+    },
+    {
+      type: "Feature",
+      id: "NSW",
+      properties: { name: "New South Wales", code: "NSW" },
+      geometry: {
+        type: "Polygon",
+        coordinates: [[
+          [141.0, -29.0], [153.5, -28.2], [151.8, -32.9], [151.2, -33.9],
+          [150.0, -37.5], [146.8, -36.0], [141.0, -34.0], [141.0, -29.0]
+        ]]
+      }
+    },
+    {
+      type: "Feature",
+      id: "ACT",
+      properties: { name: "Australian Capital Territory", code: "ACT" },
+      geometry: {
+        type: "Polygon",
+        coordinates: [[
+          [148.8, -35.1], [149.4, -35.1], [149.4, -35.9], [148.8, -35.9], [148.8, -35.1]
+        ]]
+      }
+    },
+    {
+      type: "Feature",
+      id: "VIC",
+      properties: { name: "Victoria", code: "VIC" },
+      geometry: {
+        type: "Polygon",
+        coordinates: [[
+          [141.0, -34.0], [146.8, -36.0], [150.0, -37.5], [146.4, -39.0],
+          [144.9, -38.2], [143.5, -38.8], [141.0, -38.1], [141.0, -34.0]
+        ]]
+      }
+    },
+    {
+      type: "Feature",
+      id: "TAS",
+      properties: { name: "Tasmania", code: "TAS" },
+      geometry: {
+        type: "Polygon",
+        coordinates: [[
+          [144.6, -40.6], [148.3, -40.8], [148.3, -42.2], [147.9, -43.2],
+          [146.8, -43.6], [145.2, -43.4], [144.7, -42.2], [144.6, -40.6]
+        ]]
+      }
+    }
+  ]
+};
 
 document.addEventListener('DOMContentLoaded', () => {
   initStickyNavbar();
   initActiveNavSpy();
   initSmoothScroll();
-  initNationalTrendChart();
-  initChartCanvasPlaceholders();
+  initAllCharts();
 });
 
-function initNationalTrendChart() {
-  const target = document.querySelector('#canvas-act1');
-  if (!target || typeof d3 === 'undefined') return;
+/**
+ * Main Chart Initializer: connects to CSVs or fallbacks
+ */
+async function initAllCharts() {
+  if (typeof d3 === 'undefined') {
+    console.error('D3.js library not loaded.');
+    return;
+  }
 
-  const rows = d3.csvParse(nationalTrendCsv, d => ({
-    year: Number(d['Calendar year']),
-    value: Number(d.Hospitalisations)
-  }));
+  // 1. Chart Q1: Line chart (National Trend)
+  const q1Data = await loadCsvData('data/Q1_National_Trend.csv', row => ({
+    year: Number(row['Calendar year']),
+    value: Number(row.Hospitalisations)
+  }), DATA_FALLBACKS.q1);
+  renderQ1LineChart(q1Data);
 
-  if (!rows.length) return;
+  // 2. Chart Q2: Diverging bar chart (Crash Circumstances)
+  const q2Data = await loadCsvData('data/Q2_Crash_Circumstances.csv', row => {
+    const parsed = { year: Number(row['Calendar year']) };
+    Object.keys(row).forEach(k => {
+      if (k !== 'Calendar year') parsed[k] = Number(row[k]) || 0;
+    });
+    return parsed;
+  }, DATA_FALLBACKS.q2);
+  renderQ2DivergingBarChart(q2Data);
 
-  const firstYear = rows[0];
-  const lastYear = rows[rows.length - 1];
-  const yearDelta = lastYear.value - firstYear.value;
-  const percentChange = ((yearDelta / firstYear.value) * 100).toFixed(1);
+  // 3. Chart Q3: Choropleth Map (Jurisdictional Differences)
+  const q3Data = await loadCsvData('data/Q3_Jurisdictions.csv', row => {
+    const parsed = { year: Number(row['calendar year'] || row['Calendar year']) };
+    ['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA'].forEach(jur => {
+      parsed[jur] = Number(row[jur]) || 0;
+    });
+    return parsed;
+  }, DATA_FALLBACKS.q3);
+  renderQ3ChoroplethMap(q3Data);
 
-  const targetNode = d3.select(target);
-  targetNode.selectAll('*').remove();
+  // 4. Chart Q4: Heatmap (Remoteness Distribution)
+  const q4Data = await loadCsvData('data/Q4_Remoteness.csv', row => ({
+    year: Number(row['Calendar year']),
+    majorCities: Number(row['Major Cities']) || 0,
+    regional: Number(row.Regional) || 0,
+    remote: Number(row.Remote) || 0
+  }), DATA_FALLBACKS.q4);
+  renderQ4Heatmap(q4Data);
 
-  targetNode.append('span')
-    .attr('class', 'canvas-badge')
-    .text('Visualization Canvas • Section 1');
+  // 5. Chart Q5: Small Multiples Area Charts (First Nations Age Groups)
+  const q5Data = await loadCsvData('data/Q5_First_Nations_Age_Groups.csv', row => {
+    const parsed = { year: Number(row['Calendar year']) };
+    ['0-7', '8-16', '17-25', '26-39', '40-64', '65+'].forEach(ag => {
+      parsed[ag] = Number(row[ag]) || 0;
+    });
+    return parsed;
+  }, DATA_FALLBACKS.q5);
+  renderQ5SmallMultiples(q5Data);
+}
 
-  targetNode.append('h3')
-    .attr('class', 'canvas-heading')
-    .text('National Trend & Policy Reporting Breaks');
+/**
+ * Universal CSV Loader with safe CORS/file:/// fallback
+ */
+async function loadCsvData(url, rowParser, fallbackData) {
+  try {
+    const data = await d3.csv(url, rowParser);
+    if (data && data.length) return data;
+  } catch (err) {
+    console.warn(`[Data Loader] Live CSV load failed for ${url} (likely local file:// protocol). Using embedded clean dataset fallback.`);
+  }
+  return fallbackData;
+}
 
-  targetNode.append('p')
-    .attr('class', 'canvas-sub')
-    .text('Hospitalisations from 2011 to 2021, with the 2012 and 2017 reporting changes and the 2020 pandemic interruption reflected in the time-series pattern.');
+function createTooltip(container) {
+  let tooltip = container.select('.chart-tooltip');
+  if (tooltip.empty()) {
+    tooltip = container.append('div').attr('class', 'chart-tooltip').attr('role', 'status');
+  }
+  return tooltip;
+}
 
-  const chartShell = targetNode.append('div').attr('class', 'chart-shell');
+/* ============================================================
+   CHART 1 (Q1): LINE CHART (National Trend 2011–2021)
+   ============================================================ */
+function renderQ1LineChart(data) {
+  const container = d3.select('#canvas-act1');
+  if (container.empty() || !data.length) return;
+  container.selectAll('*').remove();
 
-  chartShell.append('div')
-    .attr('class', 'chart-summary')
-    .selectAll('span')
-    .data([
-      `2011: ${firstYear.value.toLocaleString()}`,
-      `2021: ${lastYear.value.toLocaleString()}`,
-      `Change: ${percentChange}%`
-    ])
-    .join('span')
-    .attr('class', 'chart-kpi')
-    .text(d => d);
+  const width = 850;
+  const height = 300;
+  const margin = { top: 25, right: 30, bottom: 45, left: 65 };
 
-  const width = 900;
-  const height = 280;
-  const margin = { top: 20, right: 20, bottom: 36, left: 56 };
-  const innerWidth = width - margin.left - margin.right;
-  const innerHeight = height - margin.top - margin.bottom;
+  const firstVal = data[0].value;
+  const lastVal = data[data.length - 1].value;
+  const changePercent = (((lastVal - firstVal) / firstVal) * 100).toFixed(1);
 
-  const x = d3.scaleLinear()
-    .domain(d3.extent(rows, d => d.year))
-    .range([margin.left, width - margin.right]);
+  const header = container.append('div').attr('class', 'chart-header-row');
+  header.append('div').attr('class', 'chart-heading-group')
+    .html('<h3>National Hospitalisations Line Chart (2011–2021)</h3><p>Shows changes in hospitalisation counts over time to identify overall trends</p>');
 
-  const minValue = d3.min(rows, d => d.value);
-  const maxValue = d3.max(rows, d => d.value);
-  const y = d3.scaleLinear()
-    .domain([Math.min(minValue, 0), maxValue + 1500])
-    .range([height - margin.bottom, margin.top]);
+  const kpiRow = container.append('div').attr('class', 'chart-kpi-row');
+  kpiRow.append('span').attr('class', 'chart-kpi-pill').text(`2011: ${firstVal.toLocaleString()}`);
+  kpiRow.append('span').attr('class', 'chart-kpi-pill').text(`2021: ${lastVal.toLocaleString()}`);
+  kpiRow.append('span').attr('class', 'chart-kpi-pill').style('color', '#047857').text(`11-Year Growth: +${changePercent}%`);
 
-  const svg = chartShell.append('svg')
+  const svgWrap = container.append('div').attr('class', 'chart-svg-wrap');
+  const tooltip = createTooltip(container);
+
+  const svg = svgWrap.append('svg')
     .attr('class', 'chart-svg')
     .attr('viewBox', `0 0 ${width} ${height}`)
     .attr('role', 'img')
-    .attr('aria-label', 'Hospitalisation trend chart from 2011 to 2021');
+    .attr('aria-label', `National hospitalisation line chart rising from ${firstVal} in 2011 to ${lastVal} in 2021`);
 
-  svg.append('g')
-    .selectAll('line')
-    .data(y.ticks(5))
-    .join('line')
+  const x = d3.scaleLinear().domain(d3.extent(data, d => d.year)).range([margin.left, width - margin.right]);
+  const y = d3.scaleLinear().domain([30000, 42000]).range([height - margin.bottom, margin.top]);
+
+  // Grid
+  svg.append('g').selectAll('line')
+    .data(y.ticks(5)).join('line')
     .attr('class', 'chart-grid-line')
-    .attr('x1', margin.left)
-    .attr('x2', width - margin.right)
-    .attr('y1', d => y(d))
-    .attr('y2', d => y(d));
+    .attr('x1', margin.left).attr('x2', width - margin.right)
+    .attr('y1', d => y(d)).attr('y2', d => y(d));
 
-  svg.append('g')
-    .attr('transform', `translate(${margin.left},0)`)
-    .call(d3.axisLeft(y).ticks(5).tickFormat(d => d3.format(',')(d)))
-    .call(g => g.select('.domain').attr('stroke', 'rgba(100, 116, 139, 0.35)'))
-    .call(g => g.selectAll('line').attr('stroke', 'rgba(100, 116, 139, 0.3)'))
+  // Axes
+  svg.append('g').attr('transform', `translate(0,${height - margin.bottom})`)
+    .call(d3.axisBottom(x).tickValues(data.map(d => d.year)).tickFormat(d3.format('d')))
     .call(g => g.selectAll('text').attr('class', 'chart-axis-label'));
 
-  svg.append('g')
-    .attr('transform', `translate(0,${height - margin.bottom})`)
-    .call(d3.axisBottom(x).tickValues(rows.map(d => d.year)).tickFormat(d3.format('d')))
-    .call(g => g.select('.domain').attr('stroke', 'rgba(100, 116, 139, 0.35)'))
-    .call(g => g.selectAll('line').attr('stroke', 'rgba(100, 116, 139, 0.3)'))
+  svg.append('g').attr('transform', `translate(${margin.left},0)`)
+    .call(d3.axisLeft(y).ticks(5).tickFormat(d => d.toLocaleString()))
     .call(g => g.selectAll('text').attr('class', 'chart-axis-label'));
 
-  const line = d3.line()
-    .x(d => x(d.year))
-    .y(d => y(d.value))
-    .curve(d3.curveMonotoneX);
+  // Area & Line
+  const area = d3.area().x(d => x(d.year)).y0(height - margin.bottom).y1(d => y(d.value)).curve(d3.curveMonotoneX);
+  const line = d3.line().x(d => x(d.year)).y(d => y(d.value)).curve(d3.curveMonotoneX);
 
-  svg.append('path')
-    .datum(rows)
-    .attr('class', 'chart-line')
-    .attr('d', line);
+  svg.append('path').datum(data).attr('class', 'chart-area').attr('d', area);
+  svg.append('path').datum(data).attr('class', 'chart-line').attr('d', line);
 
+  // Markers
+  const covidYear = data.find(d => d.year === 2020);
+  if (covidYear) {
+    svg.append('text')
+      .attr('x', x(2020))
+      .attr('y', y(covidYear.value) + 26)
+      .attr('text-anchor', 'middle')
+      .attr('font-size', '11px')
+      .attr('font-weight', '700')
+      .attr('fill', '#B45309')
+      .text('COVID-19 Dip');
+  }
+
+  // Dots
   svg.selectAll('circle')
-    .data(rows)
-    .join('circle')
-    .attr('class', d => d.year === 2011 || d.year === 2021 ? 'chart-point chart-point--highlight' : 'chart-point')
+    .data(data).join('circle')
+    .attr('class', d => (d.year === 2011 || d.year === 2021 || d.year === 2020) ? 'chart-point chart-point--highlight' : 'chart-point')
     .attr('cx', d => x(d.year))
     .attr('cy', d => y(d.value))
-    .attr('r', 5);
+    .attr('r', 5)
+    .attr('tabindex', '0')
+    .attr('aria-label', d => `Year ${d.year}: ${d.value.toLocaleString()} hospitalisations`)
+    .on('mouseenter focus', (event, d) => {
+      tooltip.style('opacity', 1)
+        .html(`<strong>${d.year}</strong>: ${d.value.toLocaleString()} hospitalisations`)
+        .style('left', `${x(d.year) - 20}px`)
+        .style('top', `${y(d.value) + 20}px`);
+    })
+    .on('mouseleave blur', () => tooltip.style('opacity', 0));
 
-  const table = chartShell.append('table').attr('class', 'chart-data-table');
+  buildAccessibleTable(container, 'National Road Crash Hospitalisations (2011–2021)', ['Year', 'Hospitalisations'], data.map(d => [d.year, d.value.toLocaleString()]));
+}
+
+/* ============================================================
+   CHART 2 (Q2): DIVERGING BAR CHART (Crash Circumstances Change)
+   ============================================================ */
+function renderQ2DivergingBarChart(data) {
+  const container = d3.select('#canvas-act2');
+  if (container.empty() || !data.length) return;
+  container.selectAll('*').remove();
+
+  let targetYear = 2021;
+  const categories = Object.keys(data[0]).filter(k => k !== 'year');
+  const baseYearRow = data[0]; // 2011 baseline
+
+  const header = container.append('div').attr('class', 'chart-header-row');
+  header.append('div').attr('class', 'chart-heading-group')
+    .html('<h3>Diverging Bar Chart: Crash Circumstances Change vs. 2011</h3><p>Compares percentage growth or decline across circumstances from the 2011 baseline</p>');
+
+  // Year Selection
+  const controls = header.append('div').attr('class', 'chart-controls');
+  controls.append('span').attr('class', 'control-label').text('Compare Year:');
+  const comparisonYears = [2014, 2018, 2020, 2021];
+
+  comparisonYears.forEach(yr => {
+    controls.append('button')
+      .attr('class', `chart-btn ${yr === targetYear ? 'active' : ''}`)
+      .attr('aria-pressed', yr === targetYear)
+      .text(yr)
+      .on('click', function () {
+        controls.selectAll('.chart-btn').classed('active', false).attr('aria-pressed', 'false');
+        d3.select(this).classed('active', true).attr('aria-pressed', 'true');
+        targetYear = yr;
+        updateDivergingChart();
+      });
+  });
+
+  const chartBody = container.append('div');
+  const tooltip = createTooltip(container);
+
+  function updateDivergingChart() {
+    chartBody.selectAll('*').remove();
+    const currRow = data.find(d => d.year === targetYear) || data[data.length - 1];
+
+    // Compute percentage change for each circumstance
+    const items = categories.map(cat => {
+      const vBase = baseYearRow[cat] || 0;
+      const vCurr = currRow[cat] || 0;
+      const pct = vBase > 0 ? ((vCurr - vBase) / vBase) * 100 : 0;
+      return {
+        name: cat,
+        base: vBase,
+        curr: vCurr,
+        delta: vCurr - vBase,
+        pct: pct
+      };
+    }).sort((a, b) => b.pct - a.pct);
+
+    const width = 850;
+    const height = 380;
+    const margin = { top: 25, right: 90, bottom: 35, left: 240 };
+
+    const svgWrap = chartBody.append('div').attr('class', 'chart-svg-wrap');
+    const svg = svgWrap.append('svg')
+      .attr('class', 'chart-svg')
+      .attr('viewBox', `0 0 ${width} ${height}`)
+      .attr('role', 'img')
+      .attr('aria-label', `Diverging bar chart comparing crash circumstance growth between 2011 and ${targetYear}`);
+
+    const maxPct = Math.max(d3.max(items, d => Math.abs(d.pct)), 40) * 1.15;
+    const x = d3.scaleLinear().domain([-maxPct, maxPct]).range([margin.left, width - margin.right]);
+    const y = d3.scaleBand().domain(items.map(d => d.name)).range([margin.top, height - margin.bottom]).padding(0.28);
+
+    // Center 0% line
+    svg.append('line')
+      .attr('class', 'diverging-zero-line')
+      .attr('x1', x(0))
+      .attr('x2', x(0))
+      .attr('y1', margin.top - 5)
+      .attr('y2', height - margin.bottom + 5);
+
+    // X Axis with % labels
+    svg.append('g').attr('transform', `translate(0,${height - margin.bottom})`)
+      .call(d3.axisBottom(x).ticks(7).tickFormat(d => `${d > 0 ? '+' : ''}${d}%`))
+      .call(g => g.selectAll('text').attr('class', 'chart-axis-label'));
+
+    // Y Axis labels
+    svg.append('g').attr('transform', `translate(${margin.left},0)`)
+      .call(d3.axisLeft(y).tickSize(0))
+      .call(g => g.select('.domain').remove())
+      .call(g => g.selectAll('text').attr('class', 'chart-axis-label').style('font-size', '12px').style('font-weight', '600'));
+
+    // Diverging Bars
+    svg.selectAll('.diverging-bar')
+      .data(items).join('rect')
+      .attr('class', d => `diverging-bar ${d.pct >= 0 ? 'bar-positive' : 'bar-negative'}`)
+      .attr('x', d => d.pct >= 0 ? x(0) : x(d.pct))
+      .attr('y', d => y(d.name))
+      .attr('width', d => Math.abs(x(d.pct) - x(0)))
+      .attr('height', y.bandwidth())
+      .attr('rx', 3)
+      .attr('tabindex', '0')
+      .attr('aria-label', d => `${d.name}: ${d.pct > 0 ? '+' : ''}${d.pct.toFixed(1)}% (${d.curr.toLocaleString()} in ${targetYear} vs ${d.base.toLocaleString()} in 2011)`)
+      .on('mouseenter focus', (event, d) => {
+        tooltip.style('opacity', 1)
+          .html(`<strong>${d.name}</strong><br/>2011: ${d.base.toLocaleString()} → ${targetYear}: ${d.curr.toLocaleString()}<br/>Change: <strong>${d.pct > 0 ? '+' : ''}${d.pct.toFixed(1)}%</strong> (${d.delta > 0 ? '+' : ''}${d.delta.toLocaleString()} cases)`)
+          .style('left', `${x(0) + (d.pct >= 0 ? 15 : -140)}px`)
+          .style('top', `${y(d.name) + 30}px`);
+      })
+      .on('mouseleave blur', () => tooltip.style('opacity', 0));
+
+    // Value Labels
+    svg.selectAll('.bar-val-label')
+      .data(items).join('text')
+      .attr('class', 'bar-val-label')
+      .attr('x', d => d.pct >= 0 ? x(d.pct) + 6 : x(d.pct) - 6)
+      .attr('y', d => y(d.name) + y.bandwidth() / 2 + 4)
+      .attr('text-anchor', d => d.pct >= 0 ? 'start' : 'end')
+      .attr('font-size', '11px')
+      .attr('font-weight', '700')
+      .attr('fill', d => d.pct >= 0 ? '#047857' : '#E11D48')
+      .text(d => `${d.pct > 0 ? '+' : ''}${d.pct.toFixed(1)}%`);
+
+    buildAccessibleTable(chartBody, `Crash Circumstances Percentage Change (2011 vs ${targetYear})`,
+      ['Circumstance', '2011 Cases', `${targetYear} Cases`, 'Net Change', '% Growth'],
+      items.map(d => [d.name, d.base.toLocaleString(), d.curr.toLocaleString(), `${d.delta > 0 ? '+' : ''}${d.delta.toLocaleString()}`, `${d.pct > 0 ? '+' : ''}${d.pct.toFixed(1)}%`]));
+  }
+
+  updateDivergingChart();
+}
+
+/* ============================================================
+   CHART 3 (Q3): CHOROPLETH MAP (Jurisdictions Across Australia)
+   ============================================================ */
+function renderQ3ChoroplethMap(data) {
+  const container = d3.select('#canvas-act3');
+  if (container.empty() || !data.length) return;
+  container.selectAll('*').remove();
+
+  let selectedYear = 2021;
+  const header = container.append('div').attr('class', 'chart-header-row');
+  header.append('div').attr('class', 'chart-heading-group')
+    .html('<h3>Australia Jurisdictions Choropleth Map</h3><p>Uses colour shades to show hospitalisation counts across states and territories</p>');
+
+  // Year Selection
+  const controls = header.append('div').attr('class', 'chart-controls');
+  controls.append('span').attr('class', 'control-label').text('Select Year:');
+  const years = [2011, 2014, 2018, 2021];
+
+  years.forEach(yr => {
+    controls.append('button')
+      .attr('class', `chart-btn ${yr === selectedYear ? 'active' : ''}`)
+      .attr('aria-pressed', yr === selectedYear)
+      .text(yr)
+      .on('click', function () {
+        controls.selectAll('.chart-btn').classed('active', false).attr('aria-pressed', 'false');
+        d3.select(this).classed('active', true).attr('aria-pressed', 'true');
+        selectedYear = yr;
+        updateMap();
+      });
+  });
+
+  const chartBody = container.append('div');
+  const tooltip = createTooltip(container);
+
+  function updateMap() {
+    chartBody.selectAll('*').remove();
+    const currRow = data.find(d => d.year === selectedYear) || data[data.length - 1];
+
+    const width = 850;
+    const height = 440;
+
+    const svgWrap = chartBody.append('div').attr('class', 'chart-svg-wrap');
+    const svg = svgWrap.append('svg')
+      .attr('class', 'chart-svg')
+      .attr('viewBox', `0 0 ${width} ${height}`)
+      .attr('role', 'img')
+      .attr('aria-label', `Choropleth map of Australia hospitalisations in ${selectedYear}`);
+
+    // D3 Projection
+    const projection = d3.geoMercator()
+      .fitSize([width - 80, height - 60], AUSTRALIA_GEOJSON);
+
+    const pathGenerator = d3.geoPath().projection(projection);
+
+    // Color Scale: Sequential Blue/Indigo
+    const colorScale = d3.scaleSequential()
+      .domain([400, 12000])
+      .interpolator(d3.interpolateBlues);
+
+    // Map Paths
+    const stateGroup = svg.append('g').attr('transform', 'translate(40, 20)');
+
+    stateGroup.selectAll('.state-path')
+      .data(AUSTRALIA_GEOJSON.features).join('path')
+      .attr('class', 'state-path')
+      .attr('d', pathGenerator)
+      .attr('fill', d => {
+        const val = currRow[d.id] || 0;
+        return colorScale(val);
+      })
+      .attr('tabindex', '0')
+      .attr('aria-label', d => `${d.properties.name} (${d.id}): ${(currRow[d.id] || 0).toLocaleString()} hospitalisations in ${selectedYear}`)
+      .on('mouseenter focus', (event, d) => {
+        const val = currRow[d.id] || 0;
+        tooltip.style('opacity', 1)
+          .html(`<strong>${d.properties.name} (${d.id})</strong><br/>Year ${selectedYear}: <strong>${val.toLocaleString()}</strong> admissions`)
+          .style('left', `${event.pageX ? event.offsetX + 15 : 300}px`)
+          .style('top', `${event.pageY ? event.offsetY - 20 : 150}px`);
+      })
+      .on('mouseleave blur', () => tooltip.style('opacity', 0));
+
+    // Centroid Labels
+    stateGroup.selectAll('.state-label-text')
+      .data(AUSTRALIA_GEOJSON.features).join('text')
+      .attr('class', 'state-label-text')
+      .attr('transform', d => {
+        const centroid = pathGenerator.centroid(d);
+        if (d.id === 'ACT') return `translate(${centroid[0] + 16}, ${centroid[1]})`;
+        return `translate(${centroid[0]}, ${centroid[1]})`;
+      })
+      .text(d => d.id);
+
+    // Legend
+    const legendWidth = 220;
+    const legendHeight = 12;
+    const legendG = svg.append('g').attr('transform', `translate(60, ${height - 40})`);
+
+    const defs = svg.append('defs');
+    const linearGradient = defs.append('linearGradient').attr('id', 'map-legend-gradient');
+    linearGradient.append('stop').attr('offset', '0%').attr('stop-color', colorScale(400));
+    linearGradient.append('stop').attr('offset', '100%').attr('stop-color', colorScale(12000));
+
+    legendG.append('rect')
+      .attr('width', legendWidth)
+      .attr('height', legendHeight)
+      .style('fill', 'url(#map-legend-gradient)')
+      .attr('rx', 3);
+
+    legendG.append('text').attr('x', 0).attr('y', 24).attr('font-size', '11px').attr('font-weight', '700').attr('fill', '#1E293B').text('Low (<1,000)');
+    legendG.append('text').attr('x', legendWidth).attr('y', 24).attr('text-anchor', 'end').attr('font-size', '11px').attr('font-weight', '700').attr('fill', '#1E293B').text('High (11,000+)');
+
+    const jurisdictions = ['NSW', 'VIC', 'QLD', 'WA', 'SA', 'TAS', 'ACT', 'NT'];
+    buildAccessibleTable(chartBody, `Australian Jurisdictions Hospitalisations in ${selectedYear}`,
+      ['Jurisdiction', 'Hospitalisations', 'Share of National Total'],
+      jurisdictions.map(jur => {
+        const val = currRow[jur] || 0;
+        const total = d3.sum(jurisdictions, j => currRow[j] || 0);
+        return [jur, val.toLocaleString(), `${((val / total) * 100).toFixed(1)}%`];
+      }).sort((a, b) => Number(b[1].replace(/,/g, '')) - Number(a[1].replace(/,/g, ''))));
+  }
+
+  updateMap();
+}
+
+/* ============================================================
+   CHART 4 (Q4): HEATMAP (Remoteness Distribution)
+   ============================================================ */
+function renderQ4Heatmap(data) {
+  const container = d3.select('#canvas-act4');
+  if (container.empty() || !data.length) return;
+  container.selectAll('*').remove();
+
+  const header = container.append('div').attr('class', 'chart-header-row');
+  header.append('div').attr('class', 'chart-heading-group')
+    .html('<h3>Remoteness Distribution Heatmap (2011–2021)</h3><p>Uses colour shades to compare hospitalisation counts across areas and years</p>');
+
+  const kpiRow = container.append('div').attr('class', 'chart-kpi-row');
+  kpiRow.append('span').attr('class', 'chart-kpi-pill').text('Major Cities: Deep Blue (21k–26k)');
+  kpiRow.append('span').attr('class', 'chart-kpi-pill').text('Regional: Medium Teal (9.9k–11.4k)');
+  kpiRow.append('span').attr('class', 'chart-kpi-pill').style('color', '#B45309').text('Remote: Soft Amber (1.0k–1.2k)');
+
+  const width = 850;
+  const height = 240;
+  const margin = { top: 20, right: 30, bottom: 45, left: 140 };
+
+  const svgWrap = container.append('div').attr('class', 'chart-svg-wrap');
+  const tooltip = createTooltip(container);
+
+  const svg = svgWrap.append('svg')
+    .attr('class', 'chart-svg')
+    .attr('viewBox', `0 0 ${width} ${height}`)
+    .attr('role', 'img')
+    .attr('aria-label', 'Heatmap comparing road crash hospitalisations across Major Cities, Regional, and Remote areas from 2011 to 2021');
+
+  const areas = ['Major Cities', 'Regional', 'Remote'];
+  const years = data.map(d => d.year);
+
+  // Flatten data for heatmap cells
+  const cells = [];
+  data.forEach(d => {
+    cells.push({ year: d.year, area: 'Major Cities', value: d.majorCities });
+    cells.push({ year: d.year, area: 'Regional', value: d.regional });
+    cells.push({ year: d.year, area: 'Remote', value: d.remote });
+  });
+
+  const x = d3.scaleBand().domain(years).range([margin.left, width - margin.right]).padding(0.06);
+  const y = d3.scaleBand().domain(areas).range([margin.top, height - margin.bottom]).padding(0.12);
+
+  // Heatmap Color Scale
+  const colorScale = d3.scaleSequential()
+    .domain([1000, 27000])
+    .interpolator(d3.interpolateBlues);
+
+  // X Axis
+  svg.append('g').attr('transform', `translate(0,${height - margin.bottom})`)
+    .call(d3.axisBottom(x).tickFormat(d3.format('d')))
+    .call(g => g.selectAll('text').attr('class', 'chart-axis-label'));
+
+  // Y Axis
+  svg.append('g').attr('transform', `translate(${margin.left},0)`)
+    .call(d3.axisLeft(y).tickSize(0))
+    .call(g => g.select('.domain').remove())
+    .call(g => g.selectAll('text').attr('class', 'chart-axis-label').style('font-size', '13px').style('font-weight', '700'));
+
+  // Cells
+  svg.selectAll('.heatmap-cell')
+    .data(cells).join('rect')
+    .attr('class', 'heatmap-cell')
+    .attr('x', d => x(d.year))
+    .attr('y', d => y(d.area))
+    .attr('width', x.bandwidth())
+    .attr('height', y.bandwidth())
+    .attr('fill', d => colorScale(d.value))
+    .attr('rx', 4)
+    .attr('tabindex', '0')
+    .attr('aria-label', d => `${d.area} (${d.year}): ${d.value.toLocaleString()} hospitalisations`)
+    .on('mouseenter focus', (event, d) => {
+      tooltip.style('opacity', 1)
+        .html(`<strong>${d.area} - ${d.year}</strong><br/>Hospitalised: <strong>${d.value.toLocaleString()}</strong>`)
+        .style('left', `${x(d.year) + 10}px`)
+        .style('top', `${y(d.area) + 40}px`);
+    })
+    .on('mouseleave blur', () => tooltip.style('opacity', 0));
+
+  // Cell Text Values
+  svg.selectAll('.heatmap-cell-text')
+    .data(cells).join('text')
+    .attr('class', 'heatmap-cell-text')
+    .attr('x', d => x(d.year) + x.bandwidth() / 2)
+    .attr('y', d => y(d.area) + y.bandwidth() / 2)
+    .attr('fill', d => d.value > 15000 ? '#FFFFFF' : '#0F172A')
+    .text(d => {
+      if (d.value >= 1000) return `${(d.value / 1000).toFixed(1)}k`;
+      return d.value;
+    });
+
+  buildAccessibleTable(container, 'Remoteness Distribution Heatmap Table (2011–2021)',
+    ['Year', 'Major Cities', 'Regional', 'Remote', 'Total'],
+    data.map(d => [d.year, d.majorCities.toLocaleString(), d.regional.toLocaleString(), d.remote.toLocaleString(), (d.majorCities + d.regional + d.remote).toLocaleString()]));
+}
+
+/* ============================================================
+   CHART 5 (Q5): SMALL MULTIPLES AREA CHARTS (First Nations Age Groups)
+   ============================================================ */
+function renderQ5SmallMultiples(data) {
+  const container = d3.select('#canvas-act5');
+  if (container.empty() || !data.length) return;
+  container.selectAll('*').remove();
+
+  const ageGroups = ['0-7', '8-16', '17-25', '26-39', '40-64', '65+'];
+
+  const header = container.append('div').attr('class', 'chart-header-row');
+  header.append('div').attr('class', 'chart-heading-group')
+    .html('<h3>First Nations Age Groups: Small Multiples (Area Charts)</h3><p>Shows each age group on a separate chart using the same scale (0–750) for direct visual comparison</p>');
+
+  const kpiRow = container.append('div').attr('class', 'chart-kpi-row');
+  kpiRow.append('span').attr('class', 'chart-kpi-pill').style('color', '#991B1B').text('Age 17–25: Peak Cohort (Peaked at 705)');
+  kpiRow.append('span').attr('class', 'chart-kpi-pill').style('color', '#991B1B').text('Age 26–39: Rapid Surge (+108.7%)');
+  kpiRow.append('span').attr('class', 'chart-kpi-pill').text('Shared Y-Axis Scale: 0 to 750 Admissions');
+
+  // Small Multiples Grid
+  const grid = container.append('div').attr('class', 'small-multiples-grid');
+  const tooltip = createTooltip(container);
+
+  const cardWidth = 260;
+  const cardHeight = 140;
+  const margin = { top: 15, right: 15, bottom: 25, left: 35 };
+
+  ageGroups.forEach(ag => {
+    const card = grid.append('div').attr('class', 'multiple-card');
+
+    const series = data.map(d => ({ year: d.year, value: d[ag] }));
+    const vBase = series[0].value;
+    const vEnd = series[series.length - 1].value;
+    const growth = (((vEnd - vBase) / vBase) * 100).toFixed(1);
+    const isPeak = ag === '17-25' || ag === '26-39';
+
+    const cardHeader = card.append('div').attr('class', 'multiple-card-header');
+    cardHeader.append('span').attr('class', 'multiple-age-title').text(`Age ${ag}`);
+    cardHeader.append('span')
+      .attr('class', `multiple-badge ${isPeak ? 'multiple-badge--surge' : 'multiple-badge--neutral'}`)
+      .text(`${growth > 0 ? '+' : ''}${growth}% (10-Yr)`);
+
+    card.append('div').attr('class', 'multiple-kpi-sub')
+      .text(`2011: ${vBase} → 2021: ${vEnd} admissions`);
+
+    const svg = card.append('svg')
+      .attr('viewBox', `0 0 ${cardWidth} ${cardHeight}`)
+      .attr('role', 'img')
+      .attr('aria-label', `Area chart for age group ${ag} from 2011 to 2021`);
+
+    const x = d3.scaleLinear().domain([2011, 2021]).range([margin.left, cardWidth - margin.right]);
+    // Unified Y scale 0 to 750 for accurate small multiples comparison
+    const y = d3.scaleLinear().domain([0, 750]).range([cardHeight - margin.bottom, margin.top]);
+
+    // X Axis
+    svg.append('g').attr('transform', `translate(0,${cardHeight - margin.bottom})`)
+      .call(d3.axisBottom(x).ticks(5).tickFormat(d3.format('d')))
+      .call(g => g.selectAll('text').attr('class', 'chart-axis-label'));
+
+    // Y Axis
+    svg.append('g').attr('transform', `translate(${margin.left},0)`)
+      .call(d3.axisLeft(y).ticks(3))
+      .call(g => g.selectAll('text').attr('class', 'chart-axis-label'));
+
+    // Area & Line
+    const area = d3.area().x(d => x(d.year)).y0(cardHeight - margin.bottom).y1(d => y(d.value)).curve(d3.curveMonotoneX);
+    const line = d3.line().x(d => x(d.year)).y(d => y(d.value)).curve(d3.curveMonotoneX);
+
+    svg.append('path').datum(series)
+      .attr('fill', isPeak ? 'rgba(225, 29, 72, 0.15)' : 'rgba(2, 132, 199, 0.15)')
+      .attr('d', area);
+
+    svg.append('path').datum(series)
+      .attr('fill', 'none')
+      .attr('stroke', isPeak ? '#E11D48' : '#0284C7')
+      .attr('stroke-width', 2.5)
+      .attr('d', line);
+
+    // End points
+    svg.selectAll('circle')
+      .data([series[0], series[series.length - 1]]).join('circle')
+      .attr('cx', d => x(d.year))
+      .attr('cy', d => y(d.value))
+      .attr('r', 3.5)
+      .attr('fill', isPeak ? '#E11D48' : '#0284C7');
+  });
+
+  buildAccessibleTable(container, 'First Nations Road Crash Admissions by Age Cohort (2011–2021)',
+    ['Year', '0-7', '8-16', '17-25', '26-39', '40-64', '65+', 'Total'],
+    data.map(d => {
+      const tot = d3.sum(ageGroups, ag => d[ag]);
+      return [d.year, d['0-7'], d['8-16'], d['17-25'], d['26-39'], d['40-64'], d['65+'], tot.toLocaleString()];
+    }));
+}
+
+/* ============================================================
+   ACCESSIBLE DATA TABLE GENERATOR
+   ============================================================ */
+function buildAccessibleTable(container, captionText, headers, rows) {
+  const wrap = container.append('div').attr('class', 'table-toggle-wrap');
+
+  const btn = wrap.append('button')
+    .attr('class', 'table-toggle-btn')
+    .attr('type', 'button')
+    .attr('aria-expanded', 'false')
+    .html('<span>Show Accessible Data Table</span> <span aria-hidden="true">▼</span>');
+
+  const tableWrap = wrap.append('div')
+    .attr('class', 'chart-data-table-wrap')
+    .attr('tabindex', '0')
+    .attr('role', 'region')
+    .attr('aria-label', captionText);
+
+  const table = tableWrap.append('table').attr('class', 'chart-data-table');
+  table.append('caption').text(captionText);
+
   table.append('thead').append('tr')
     .selectAll('th')
-    .data(['Year', 'Hospitalisations'])
-    .join('th')
+    .data(headers).join('th')
+    .attr('scope', 'col')
     .text(d => d);
 
   table.append('tbody')
     .selectAll('tr')
-    .data(rows)
-    .join('tr')
+    .data(rows).join('tr')
     .selectAll('td')
-    .data(d => [d.year, d.value.toLocaleString()])
-    .join('td')
-    .text(d => d);
+    .data((d, i) => d.map((cell, cellIdx) => ({ cell, isHeader: cellIdx === 0 })))
+    .join(enter => {
+      return enter.append(d => d.isHeader ? document.createElement('th') : document.createElement('td'))
+        .attr('scope', d => d.isHeader ? 'row' : null)
+        .text(d => d.cell);
+    });
 
-  targetNode.append('div')
-    .attr('class', 'canvas-candidate-pills')
-    .selectAll('span')
-    .data([
-      'Candidate: Annotated Multi-Line Chart',
-      'Candidate: Longitudinal Stepped Area',
-      'Candidate: Horizon Chart'
-    ])
-    .join('span')
-    .attr('class', 'candidate-pill')
-    .text(d => d);
+  btn.on('click', function () {
+    const isOpen = tableWrap.classed('is-open');
+    tableWrap.classed('is-open', !isOpen);
+    d3.select(this)
+      .attr('aria-expanded', !isOpen)
+      .html(`<span>${!isOpen ? 'Hide Accessible Data Table' : 'Show Accessible Data Table'}</span> <span aria-hidden="true">${!isOpen ? '▲' : '▼'}</span>`);
+  });
 }
 
-/**
- * Elevates navbar with enhanced shadow and frosted background on scroll
- */
+/* ============================================================
+   NAVIGATION & SCROLL
+   ============================================================ */
 function initStickyNavbar() {
   const navbar = document.querySelector('nav.sticky-nav');
   if (!navbar) return;
@@ -181,12 +867,9 @@ function initStickyNavbar() {
   };
 
   window.addEventListener('scroll', handleScroll, { passive: true });
-  handleScroll(); // Initial check
+  handleScroll();
 }
 
-/**
- * Highlights the active navigation chip based on current viewport scroll position
- */
 function initActiveNavSpy() {
   const sections = document.querySelectorAll('#story-prologue, .story-chapter, #team');
   const navLinks = document.querySelectorAll('.nav-links .nav-link');
@@ -217,14 +900,11 @@ function initActiveNavSpy() {
   sections.forEach(section => observer.observe(section));
 }
 
-/**
- * Smooth scrolling with header offset for anchor jumps
- */
 function initSmoothScroll() {
   const scrollTriggers = document.querySelectorAll('a[href^="#"]');
 
   scrollTriggers.forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
+    anchor.addEventListener('click', function (e) {
       const targetId = this.getAttribute('href');
       if (targetId === '#') return;
 
@@ -239,61 +919,10 @@ function initSmoothScroll() {
           top: offsetPosition,
           behavior: 'smooth'
         });
+
+        targetElement.setAttribute('tabindex', '-1');
+        targetElement.focus({ preventScroll: true });
       }
     });
   });
 }
-
-/**
- * Application namespace for future D3.js chart modules
- */
-window.RoadTraumaApp = {
-  // Chart Initializers - ready for D3.js implementation
-  charts: {
-    act1: {
-      id: 'canvas-act1',
-      title: 'National 11-Year Trajectory',
-      initialized: false,
-      render: function() {
-        console.log('[RoadTraumaApp] Act 1 Canvas ready for D3 Multi-Line implementation.');
-      }
-    },
-    act2: {
-      id: 'canvas-act2',
-      title: 'Road User Vulnerability Shift',
-      initialized: false,
-      render: function() {
-        console.log('[RoadTraumaApp] Act 2 Canvas ready for D3 Diverging Bar / Stacked Stream.');
-      }
-    },
-    act3: {
-      id: 'canvas-act3',
-      title: 'Demographic & Bed Days Burden',
-      initialized: false,
-      render: function() {
-        console.log('[RoadTraumaApp] Act 3 Canvas ready for D3 Population Butterfly.');
-      }
-    },
-    act4: {
-      id: 'canvas-act4',
-      title: 'Geographic Per-Capita Realities',
-      initialized: false,
-      render: function() {
-        console.log('[RoadTraumaApp] Act 4 Canvas ready for D3 Choropleth Map.');
-      }
-    },
-    act5: {
-      id: 'canvas-act5',
-      title: 'Remoteness & Healthcare Equity',
-      initialized: false,
-      render: function() {
-        console.log('[RoadTraumaApp] Act 5 Canvas ready for D3 Remoteness Treemap / Matrix.');
-      }
-    }
-  }
-};
-
-function initChartCanvasPlaceholders() {
-  console.log('[RoadTraumaApp] Scrollytelling visual application loaded successfully.');
-}
-
