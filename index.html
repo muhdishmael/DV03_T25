@@ -18,8 +18,8 @@
   <!-- Main External Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
 
-  <!-- D3.js v7 CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <!-- Local D3.js v7 Library -->
+  <script src="js/d3.v7.min.js"></script>
 
   <!-- Main Application Script -->
   <script src="js/script.js" defer></script>
@@ -30,9 +30,7 @@
   <!-- Accessible Skip to Content Link -->
   <a href="#story-prologue" class="skip-link">Skip to main content</a>
 
-  <!-- ============================================================
-       1. FULLSCREEN LANDING COVER (Professional Public Health Portal)
-       ============================================================ -->
+  <!-- 1. FULLSCREEN LANDING COVER -->
   <section class="landing-cover" aria-label="Cover Page">
     <div class="landing-top-bar">
       <div>
@@ -71,9 +69,7 @@
     </div>
   </section>
 
-  <!-- ============================================================
-       2. STICKY EDITORIAL NAVIGATION
-       ============================================================ -->
+  <!-- 2. STICKY EDITORIAL NAVIGATION -->
   <nav class="sticky-nav" aria-label="Story chapter navigation">
     <div class="container nav-inner">
       <a class="nav-brand" href="#story-prologue" aria-label="Home Overview">
@@ -96,7 +92,7 @@
         <a class="nav-link" href="#act3" role="menuitem">Q3. Jurisdictions</a>
         <a class="nav-link" href="#act4" role="menuitem">Q4. Remoteness</a>
         <a class="nav-link" href="#act5" role="menuitem">Q5. First Nations</a>
-        <a class="nav-link" href="#team" role="menuitem">Team</a>
+        <a class="nav-link" href="#about-us" role="menuitem">About Us</a>
       </div>
     </div>
   </nav>
@@ -104,9 +100,7 @@
   <!-- MAIN CONTENT CONTAINER -->
   <main id="story-start" class="container">
 
-    <!-- ============================================================
-         3. PROLOGUE & PROJECT BRIEF
-         ============================================================ -->
+    <!-- 3. PROLOGUE & PROJECT BRIEF -->
     <header id="story-prologue" class="story-prologue" tabindex="-1">
       <h2 class="prologue-title">Hospitalised Injuries from Road Crashes in Australia</h2>
 
@@ -162,9 +156,7 @@
       </div>
     </header>
 
-    <!-- ============================================================
-         ACT 1: QUESTION 1 (NATIONAL TREND) - LINE CHART
-         ============================================================ -->
+    <!-- ACT 1: QUESTION 1 - LINE CHART -->
     <section id="act1" class="story-chapter" aria-labelledby="heading-act1">
       <div class="chapter-card">
         <div class="chapter-meta">
@@ -173,24 +165,35 @@
           <span class="chapter-theme-tag">National Long-Term Trajectory (2011–2021)</span>
         </div>
 
-        <h2 id="heading-act1" class="chapter-title">The 11-Year Arc: National Road Trauma Trend</h2>
+        <h2 id="heading-act1" class="chapter-title">The Road Injury Story: 11 Years in Review</h2>
 
         <div class="chapter-question">
           <strong>Q1 (National Trend):</strong> How did the national total of road-crash hospitalisations change across
           Australia from 2011 to 2021, and what trends can be observed over this period?
         </div>
 
-        <!-- Live Connected D3 Line Chart Container -->
-        <div id="canvas-act1" class="chart-container-box" role="region"
-          aria-label="National trend line chart and data table">
+        <div class="chart-instruction" role="note">
+          <div class="instruction-badge">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <span>Interaction Guide</span>
+          </div>
+          <span class="instruction-text">Hover over any data point along the trend line for exact hospitalisation counts
+            and year details. Notice the highlighted <strong style="color: #DC2626;">2019 peak (highest year:
+              39,866)</strong> and the 2020 COVID-19 dip.</span>
+        </div>
+
+        <div id="canvas-act1" class="chart-container-box" role="region" aria-label="National trend line chart">
           <!-- Populated dynamically by script.js -->
         </div>
       </div>
     </section>
 
-    <!-- ============================================================
-         ACT 2: QUESTION 2 (CRASH CIRCUMSTANCES) - DIVERGING BAR CHART
-         ============================================================ -->
+    <!-- ACT 2: QUESTION 2 - DIVERGING BAR CHART -->
     <section id="act2" class="story-chapter" aria-labelledby="heading-act2">
       <div class="chapter-card">
         <div class="chapter-meta">
@@ -199,24 +202,36 @@
           <span class="chapter-theme-tag">Crash Circumstances &amp; Vehicle Categories</span>
         </div>
 
-        <h2 id="heading-act2" class="chapter-title">Crash Circumstances: Which Crash Types Grew the Most?</h2>
+        <h2 id="heading-act2" class="chapter-title">Behind the Crashes: What Caused the Most Injuries?</h2>
 
         <div class="chapter-question">
           <strong>Q2 (Crash Circumstances):</strong> Which crash circumstances contributed the most to road-crash
           hospitalisations, and how did their respective hospitalisation counts change over the years?
         </div>
 
-        <!-- Live Connected D3 Diverging Bar Chart Container -->
+        <div class="chart-instruction" role="note">
+          <div class="instruction-badge">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <span>Interaction Guide</span>
+          </div>
+          <span class="instruction-text">Use the comparison year buttons (<strong>2014</strong>, <strong>2018</strong>,
+            <strong>2019</strong>, <strong>2020</strong>, <strong>2021</strong>) to compare growth against the 2011
+            baseline. Hover over each bar for exact case counts, net changes, and percentage shifts.</span>
+        </div>
+
         <div id="canvas-act2" class="chart-container-box" role="region"
-          aria-label="Crash circumstances diverging bar chart and data table">
+          aria-label="Crash circumstances diverging bar chart">
           <!-- Populated dynamically by script.js -->
         </div>
       </div>
     </section>
 
-    <!-- ============================================================
-         ACT 3: QUESTION 3 (JURISDICTIONAL DIFFERENCES) - CHOROPLETH MAP
-         ============================================================ -->
+    <!-- ACT 3: QUESTION 3 - CHOROPLETH MAP -->
     <section id="act3" class="story-chapter" aria-labelledby="heading-act3">
       <div class="chapter-card">
         <div class="chapter-meta">
@@ -225,7 +240,7 @@
           <span class="chapter-theme-tag">States &amp; Territories Comparison</span>
         </div>
 
-        <h2 id="heading-act3" class="chapter-title">Jurisdictional Differences Across Australia</h2>
+        <h2 id="heading-act3" class="chapter-title">Across Australia: Where Were Injuries Highest?</h2>
 
         <div class="chapter-question">
           <strong>Q3 (Jurisdictional Differences):</strong> How did road-crash hospitalisation counts vary across
@@ -233,17 +248,30 @@
           years?
         </div>
 
-        <!-- Live Connected D3 Choropleth Map Container -->
+        <div class="chart-instruction" role="note">
+          <div class="instruction-badge">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <span>Interaction Guide</span>
+          </div>
+          <span class="instruction-text">Use the year buttons (<strong>2011</strong>, <strong>2014</strong>,
+            <strong>2018</strong>, <strong>2019</strong>, <strong>2021</strong>) to view jurisdictional changes over
+            time. Hover over any state or territory for exact admission counts and national share. Clear dark blue
+            indicates highest counts, while light blue denotes lowest counts.</span>
+        </div>
+
         <div id="canvas-act3" class="chart-container-box" role="region"
-          aria-label="Australia jurisdictions choropleth map and data table">
+          aria-label="Australia jurisdictions choropleth map">
           <!-- Populated dynamically by script.js -->
         </div>
       </div>
     </section>
 
-    <!-- ============================================================
-         ACT 4: QUESTION 4 (REMOTENESS DISTRIBUTION) - HEATMAP
-         ============================================================ -->
+    <!-- ACT 4: QUESTION 4 - HEATMAP -->
     <section id="act4" class="story-chapter" aria-labelledby="heading-act4">
       <div class="chapter-card">
         <div class="chapter-meta">
@@ -252,24 +280,35 @@
           <span class="chapter-theme-tag">Major Cities vs. Regional vs. Remote</span>
         </div>
 
-        <h2 id="heading-act4" class="chapter-title">Remoteness Distribution: Major Cities, Regional and Remote</h2>
+        <h2 id="heading-act4" class="chapter-title">City to Outback: How Location Shapes Road Injuries</h2>
 
         <div class="chapter-question">
           <strong>Q4 (Remoteness Distribution):</strong> How did road-crash hospitalisation counts differ across Major
           Cities, Regional and Remote areas, and how did these patterns change from year to year?
         </div>
 
-        <!-- Live Connected D3 Heatmap Container -->
-        <div id="canvas-act4" class="chart-container-box" role="region"
-          aria-label="Remoteness distribution heatmap and data table">
+        <div class="chart-instruction" role="note">
+          <div class="instruction-badge">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <span>Interaction Guide</span>
+          </div>
+          <span class="instruction-text">Hover over any cell across the 11-year grid (2011–2021) to inspect exact
+            hospitalisations for Major Cities, Regional, and Remote areas. Compare colour depth across columns to trace
+            urbanization patterns.</span>
+        </div>
+
+        <div id="canvas-act4" class="chart-container-box" role="region" aria-label="Remoteness distribution heatmap">
           <!-- Populated dynamically by script.js -->
         </div>
       </div>
     </section>
 
-    <!-- ============================================================
-         ACT 5: QUESTION 5 (FIRST NATIONS AGE GROUP ANALYSIS) - SMALL MULTIPLES
-         ============================================================ -->
+    <!-- ACT 5: QUESTION 5 - SMALL MULTIPLES -->
     <section id="act5" class="story-chapter" aria-labelledby="heading-act5">
       <div class="chapter-card">
         <div class="chapter-meta">
@@ -278,7 +317,7 @@
           <span class="chapter-theme-tag">First Nations Road Safety &amp; Age Cohorts</span>
         </div>
 
-        <h2 id="heading-act5" class="chapter-title">First Nations Road Safety: Distribution by Age Group</h2>
+        <h2 id="heading-act5" class="chapter-title">A Generation at Risk: First Nations Age Groups</h2>
 
         <div class="chapter-question">
           <strong>Q5 (First Nations Age Group Analysis):</strong> How were road-crash hospitalisations among First
@@ -286,21 +325,33 @@
           over time?
         </div>
 
-        <!-- Live Connected D3 Small Multiples Container -->
+        <div class="chart-instruction" role="note">
+          <div class="instruction-badge">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <span>Interaction Guide</span>
+          </div>
+          <span class="instruction-text">Compare age cohort trajectories using the shared vertical scale (0 to 750
+            admissions). Hover over <strong>any data point</strong> across the 11 years (2011–2021) to inspect exact
+            annual hospitalisation counts and 10-year growth percentages.</span>
+        </div>
+
         <div id="canvas-act5" class="chart-container-box" role="region"
-          aria-label="First Nations age groups small multiples area charts and data table">
+          aria-label="First Nations age groups small multiples area charts">
           <!-- Populated dynamically by script.js -->
         </div>
       </div>
     </section>
 
-    <!-- ============================================================
-         6. TEAM SECTION (Group and Student Details Placed Here)
-         ============================================================ -->
-    <section id="team" class="team-section" aria-labelledby="team-heading">
+    <!-- 6. ABOUT US SECTION -->
+    <section id="about-us" class="team-section" aria-labelledby="about-heading">
       <div class="team-header">
         <span class="prologue-tag">Project Contributors</span>
-        <h2 id="team-heading" class="team-header-title">Project Team &amp; Responsibilities</h2>
+        <h2 id="about-heading" class="team-header-title">About Us</h2>
         <p class="team-header-sub">
           COS30045 Data Visualisation Project • Group <strong>DV03_T25</strong>
         </p>
@@ -311,10 +362,10 @@
           <div class="team-avatar avatar-aisyah" aria-hidden="true">AF</div>
           <div class="team-name">Aisyah Salsabila binti Fadillah</div>
           <div class="team-id">Student ID: 1067634640</div>
-          <div class="team-role">Data Processing &amp; KNIME ETL</div>
+          <div class="team-role">D3.js &amp; Visual Storytelling</div>
           <p class="team-desc">
-            Responsible for ingesting raw BITRE Excel workbooks, filtering traffic crash categories, deriving non-fatal
-            metrics, managing small-cell privacy suppressions, and documenting data governance.
+            Responsible for front-end architecture, responsive web visualisations, interaction design, accessible D3
+            chart implementations, and WCAG standards.
           </p>
         </div>
 
@@ -322,10 +373,10 @@
           <div class="team-avatar avatar-ishmael" aria-hidden="true">IR</div>
           <div class="team-name">Muhammad Ishmael 'Aqib bin Roslee</div>
           <div class="team-id">Student ID: 106763956</div>
-          <div class="team-role">D3.js &amp; Visual Storytelling</div>
+          <div class="team-role">Data Processing &amp; KNIME ETL</div>
           <p class="team-desc">
-            Responsible for front-end architecture, responsive web visualisations, interaction design, accessible D3
-            chart implementations, and WCAG standards.
+            Responsible for ingesting raw BITRE Excel workbooks, filtering traffic crash categories, deriving non-fatal
+            metrics, managing small-cell privacy suppressions, and documenting data governance.
           </p>
         </div>
       </div>
@@ -333,9 +384,7 @@
 
   </main>
 
-  <!-- ============================================================
-       7. REAL-WEBSITE FOOTER
-       ============================================================ -->
+  <!-- 7. WEBSITE FOOTER -->
   <footer class="site-footer" role="contentinfo">
     <div class="container footer-inner">
       <div class="footer-brand-col">

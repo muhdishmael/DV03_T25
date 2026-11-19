@@ -289,6 +289,7 @@ function renderQ1LineChart(data) {
 
   const kpiRow = container.append('div').attr('class', 'chart-kpi-row');
   kpiRow.append('span').attr('class', 'chart-kpi-pill').text(`2011: ${firstVal.toLocaleString()}`);
+  kpiRow.append('span').attr('class', 'chart-kpi-pill').style('color', '#DC2626').style('font-weight', '800').text('★ Highest Year: 2019 (39,866)');
   kpiRow.append('span').attr('class', 'chart-kpi-pill').text(`2021: ${lastVal.toLocaleString()}`);
   kpiRow.append('span').attr('class', 'chart-kpi-pill').style('color', '#047857').text(`11-Year Growth: +${changePercent}%`);
 
@@ -299,7 +300,7 @@ function renderQ1LineChart(data) {
     .attr('class', 'chart-svg')
     .attr('viewBox', `0 0 ${width} ${height}`)
     .attr('role', 'img')
-    .attr('aria-label', `National hospitalisation line chart rising from ${firstVal} in 2011 to ${lastVal} in 2021`);
+    .attr('aria-label', `National hospitalisation line chart rising from ${firstVal} in 2011 to a peak of 39,866 in 2019 and closing at ${lastVal} in 2021`);
 
   const x = d3.scaleLinear().domain(d3.extent(data, d => d.year)).range([margin.left, width - margin.right]);
   const y = d3.scaleLinear().domain([30000, 42000]).range([height - margin.bottom, margin.top]);
@@ -328,6 +329,24 @@ function renderQ1LineChart(data) {
   svg.append('path').datum(data).attr('class', 'chart-line').attr('d', line);
 
   // Markers
+  const peakYear = data.find(d => d.year === 2019);
+  if (peakYear) {
+    svg.append('text')
+      .attr('x', x(2019))
+      .attr('y', y(peakYear.value) - 14)
+      .attr('text-anchor', 'middle')
+      .attr('font-size', '11px')
+      .attr('font-weight', '800')
+      .attr('fill', '#DC2626')
+      .text('Highest: 39,866');
+
+    svg.append('line')
+      .attr('x1', x(2019)).attr('x2', x(2019))
+      .attr('y1', y(peakYear.value) - 10).attr('y2', y(peakYear.value) - 4)
+      .attr('stroke', '#DC2626')
+      .attr('stroke-width', 2);
+  }
+
   const covidYear = data.find(d => d.year === 2020);
   if (covidYear) {
     svg.append('text')
@@ -343,21 +362,23 @@ function renderQ1LineChart(data) {
   // Dots
   svg.selectAll('circle')
     .data(data).join('circle')
-    .attr('class', d => (d.year === 2011 || d.year === 2021 || d.year === 2020) ? 'chart-point chart-point--highlight' : 'chart-point')
+    .attr('class', d => {
+      if (d.year === 2019) return 'chart-point chart-point--peak';
+      if (d.year === 2011 || d.year === 2021 || d.year === 2020) return 'chart-point chart-point--highlight';
+      return 'chart-point';
+    })
     .attr('cx', d => x(d.year))
     .attr('cy', d => y(d.value))
-    .attr('r', 5)
+    .attr('r', d => d.year === 2019 ? 7 : 5)
     .attr('tabindex', '0')
-    .attr('aria-label', d => `Year ${d.year}: ${d.value.toLocaleString()} hospitalisations`)
+    .attr('aria-label', d => `Year ${d.year}: ${d.value.toLocaleString()} hospitalisations${d.year === 2019 ? ' (Highest Year)' : ''}`)
     .on('mouseenter focus', (event, d) => {
       tooltip.style('opacity', 1)
-        .html(`<strong>${d.year}</strong>: ${d.value.toLocaleString()} hospitalisations`)
+        .html(`<strong>${d.year}</strong>: ${d.value.toLocaleString()} hospitalisations${d.year === 2019 ? '<br/><span style="color:#FCA5A5;font-weight:700;">★ Highest Year (Peak)</span>' : ''}`)
         .style('left', `${x(d.year) - 20}px`)
         .style('top', `${y(d.value) + 20}px`);
     })
     .on('mouseleave blur', () => tooltip.style('opacity', 0));
-
-  buildAccessibleTable(container, 'National Road Crash Hospitalisations (2011–2021)', ['Year', 'Hospitalisations'], data.map(d => [d.year, d.value.toLocaleString()]));
 }
 
 /* ============================================================
@@ -379,7 +400,7 @@ function renderQ2DivergingBarChart(data) {
   // Year Selection
   const controls = header.append('div').attr('class', 'chart-controls');
   controls.append('span').attr('class', 'control-label').text('Compare Year:');
-  const comparisonYears = [2014, 2018, 2020, 2021];
+  const comparisonYears = [2014, 2018, 2019, 2020, 2021];
 
   comparisonYears.forEach(yr => {
     controls.append('button')
@@ -479,10 +500,6 @@ function renderQ2DivergingBarChart(data) {
       .attr('font-weight', '700')
       .attr('fill', d => d.pct >= 0 ? '#047857' : '#E11D48')
       .text(d => `${d.pct > 0 ? '+' : ''}${d.pct.toFixed(1)}%`);
-
-    buildAccessibleTable(chartBody, `Crash Circumstances Percentage Change (2011 vs ${targetYear})`,
-      ['Circumstance', '2011 Cases', `${targetYear} Cases`, 'Net Change', '% Growth'],
-      items.map(d => [d.name, d.base.toLocaleString(), d.curr.toLocaleString(), `${d.delta > 0 ? '+' : ''}${d.delta.toLocaleString()}`, `${d.pct > 0 ? '+' : ''}${d.pct.toFixed(1)}%`]));
   }
 
   updateDivergingChart();
@@ -499,12 +516,12 @@ function renderQ3ChoroplethMap(data) {
   let selectedYear = 2021;
   const header = container.append('div').attr('class', 'chart-header-row');
   header.append('div').attr('class', 'chart-heading-group')
-    .html('<h3>Australia Jurisdictions Choropleth Map</h3><p>Uses colour shades to show hospitalisation counts across states and territories</p>');
+    .html('<h3>Australia Jurisdictions Choropleth Map</h3><p>Sequential blue shading: Darker blue indicates higher hospitalisation counts. Hover over states for exact details.</p>');
 
   // Year Selection
   const controls = header.append('div').attr('class', 'chart-controls');
   controls.append('span').attr('class', 'control-label').text('Select Year:');
-  const years = [2011, 2014, 2018, 2021];
+  const years = [2011, 2014, 2018, 2019, 2021];
 
   years.forEach(yr => {
     controls.append('button')
@@ -522,91 +539,173 @@ function renderQ3ChoroplethMap(data) {
   const chartBody = container.append('div');
   const tooltip = createTooltip(container);
 
+  // 5-Tier Sequential Blue Scale with Clear Contrast:
+  // Low (<1,000) = Very light blue (#BAE6FD)
+  // Moderate-Low (1,000–3,500) = Soft blue (#60A5FA)
+  // Moderate (3,500–7,500) = Medium blue (#2563EB)
+  // High (7,500–10,000) = Dark blue (#1D4ED8)
+  // Highest (10,000+) = Deep Dark Blue (#092347)
+  const COLOR_TIERS = [
+    { max: 1000, label: '< 1,000', tier: 'Lowest', color: '#BAE6FD', darkText: true },
+    { max: 3500, label: '1,000 – 3,500', tier: 'Moderate-Low', color: '#60A5FA', darkText: true },
+    { max: 7500, label: '3,500 – 7,500', tier: 'Moderate', color: '#2563EB', darkText: false },
+    { max: 10000, label: '7,500 – 10,000', tier: 'High', color: '#1D4ED8', darkText: false },
+    { max: Infinity, label: '10,000+', tier: 'Highest', color: '#092347', darkText: false }
+  ];
+
+  function getTier(val) {
+    for (let i = 0; i < COLOR_TIERS.length; i++) {
+      if (val < COLOR_TIERS[i].max) return COLOR_TIERS[i];
+    }
+    return COLOR_TIERS[COLOR_TIERS.length - 1];
+  }
+
   function updateMap() {
     chartBody.selectAll('*').remove();
     const currRow = data.find(d => d.year === selectedYear) || data[data.length - 1];
 
     const width = 850;
-    const height = 440;
+    const height = 450;
 
     const svgWrap = chartBody.append('div').attr('class', 'chart-svg-wrap');
     const svg = svgWrap.append('svg')
       .attr('class', 'chart-svg')
       .attr('viewBox', `0 0 ${width} ${height}`)
       .attr('role', 'img')
-      .attr('aria-label', `Choropleth map of Australia hospitalisations in ${selectedYear}`);
+      .attr('aria-label', `Choropleth map of Australia road-crash hospitalisations in ${selectedYear}`);
+
+    // Map Canvas Light Background
+    svg.append('rect')
+      .attr('width', width)
+      .attr('height', height)
+      .attr('fill', '#F8FAFC')
+      .attr('stroke', '#E2E8F0')
+      .attr('stroke-width', 1)
+      .attr('rx', 8);
 
     // D3 Projection
     const projection = d3.geoMercator()
-      .fitSize([width - 80, height - 60], AUSTRALIA_GEOJSON);
+      .fitSize([width - 80, height - 70], AUSTRALIA_GEOJSON);
 
     const pathGenerator = d3.geoPath().projection(projection);
 
-    // Color Scale: Sequential Blue/Indigo
-    const colorScale = d3.scaleSequential()
-      .domain([400, 12000])
-      .interpolator(d3.interpolateBlues);
+    const stateGroup = svg.append('g').attr('transform', 'translate(40, 15)');
 
     // Map Paths
-    const stateGroup = svg.append('g').attr('transform', 'translate(40, 20)');
-
     stateGroup.selectAll('.state-path')
       .data(AUSTRALIA_GEOJSON.features).join('path')
       .attr('class', 'state-path')
       .attr('d', pathGenerator)
       .attr('fill', d => {
         const val = currRow[d.id] || 0;
-        return colorScale(val);
+        return getTier(val).color;
       })
       .attr('tabindex', '0')
       .attr('aria-label', d => `${d.properties.name} (${d.id}): ${(currRow[d.id] || 0).toLocaleString()} hospitalisations in ${selectedYear}`)
       .on('mouseenter focus', (event, d) => {
         const val = currRow[d.id] || 0;
+        const total = d3.sum(['NSW', 'VIC', 'QLD', 'WA', 'SA', 'TAS', 'ACT', 'NT'], j => currRow[j] || 0);
+        const share = total > 0 ? ((val / total) * 100).toFixed(1) : 0;
+        const tier = getTier(val);
         tooltip.style('opacity', 1)
-          .html(`<strong>${d.properties.name} (${d.id})</strong><br/>Year ${selectedYear}: <strong>${val.toLocaleString()}</strong> admissions`)
+          .html(`<strong>${d.properties.name} (${d.id})</strong><br/>
+                 Year ${selectedYear}: <strong>${val.toLocaleString()}</strong> admissions<br/>
+                 Tier: <strong>${tier.tier} (${tier.label})</strong><br/>
+                 National Share: <strong>${share}%</strong>`)
           .style('left', `${event.pageX ? event.offsetX + 15 : 300}px`)
           .style('top', `${event.pageY ? event.offsetY - 20 : 150}px`);
       })
       .on('mouseleave blur', () => tooltip.style('opacity', 0));
 
-    // Centroid Labels
+    // Centroid Labels with Dynamic High Contrast
     stateGroup.selectAll('.state-label-text')
       .data(AUSTRALIA_GEOJSON.features).join('text')
       .attr('class', 'state-label-text')
       .attr('transform', d => {
         const centroid = pathGenerator.centroid(d);
-        if (d.id === 'ACT') return `translate(${centroid[0] + 16}, ${centroid[1]})`;
+        if (d.id === 'ACT') return `translate(${centroid[0] + 20}, ${centroid[1] - 4})`;
         return `translate(${centroid[0]}, ${centroid[1]})`;
+      })
+      .attr('fill', d => {
+        const val = currRow[d.id] || 0;
+        return getTier(val).darkText ? '#0F172A' : '#FFFFFF';
+      })
+      .style('text-shadow', d => {
+        const val = currRow[d.id] || 0;
+        return getTier(val).darkText
+          ? '0 1px 2px rgba(255, 255, 255, 0.95), 0 -1px 2px rgba(255, 255, 255, 0.95)'
+          : '0 1px 3px rgba(0, 0, 0, 0.85), 0 -1px 2px rgba(0, 0, 0, 0.5)';
       })
       .text(d => d.id);
 
-    // Legend
-    const legendWidth = 220;
-    const legendHeight = 12;
-    const legendG = svg.append('g').attr('transform', `translate(60, ${height - 40})`);
+    // ACT Leader Line & Pin so ACT is easily visible inside NSW
+    const actFeature = AUSTRALIA_GEOJSON.features.find(f => f.id === 'ACT');
+    if (actFeature) {
+      const actCentroid = pathGenerator.centroid(actFeature);
+      stateGroup.append('circle')
+        .attr('cx', actCentroid[0])
+        .attr('cy', actCentroid[1])
+        .attr('r', 3.5)
+        .attr('fill', '#0F172A')
+        .attr('stroke', '#FFFFFF')
+        .attr('stroke-width', 1.5)
+        .attr('pointer-events', 'none');
 
-    const defs = svg.append('defs');
-    const linearGradient = defs.append('linearGradient').attr('id', 'map-legend-gradient');
-    linearGradient.append('stop').attr('offset', '0%').attr('stop-color', colorScale(400));
-    linearGradient.append('stop').attr('offset', '100%').attr('stop-color', colorScale(12000));
+      stateGroup.append('line')
+        .attr('x1', actCentroid[0])
+        .attr('y1', actCentroid[1])
+        .attr('x2', actCentroid[0] + 13)
+        .attr('y2', actCentroid[1] - 3)
+        .attr('stroke', '#0F172A')
+        .attr('stroke-width', 1.2)
+        .attr('stroke-dasharray', '2,2')
+        .attr('pointer-events', 'none');
+    }
 
-    legendG.append('rect')
-      .attr('width', legendWidth)
-      .attr('height', legendHeight)
-      .style('fill', 'url(#map-legend-gradient)')
-      .attr('rx', 3);
+    // Comprehensive Numerical Range Legend (5 Sequential Steps)
+    const legendG = svg.append('g').attr('transform', `translate(35, ${height - 68})`);
 
-    legendG.append('text').attr('x', 0).attr('y', 24).attr('font-size', '11px').attr('font-weight', '700').attr('fill', '#1E293B').text('Low (<1,000)');
-    legendG.append('text').attr('x', legendWidth).attr('y', 24).attr('text-anchor', 'end').attr('font-size', '11px').attr('font-weight', '700').attr('fill', '#1E293B').text('High (11,000+)');
+    // Legend Title
+    legendG.append('text')
+      .attr('x', 0)
+      .attr('y', -8)
+      .attr('font-size', '11px')
+      .attr('font-weight', '800')
+      .attr('fill', '#0F172A')
+      .attr('letter-spacing', '0.04em')
+      .text('HOSPITALISATION COUNT (ADMISSIONS):');
 
-    const jurisdictions = ['NSW', 'VIC', 'QLD', 'WA', 'SA', 'TAS', 'ACT', 'NT'];
-    buildAccessibleTable(chartBody, `Australian Jurisdictions Hospitalisations in ${selectedYear}`,
-      ['Jurisdiction', 'Hospitalisations', 'Share of National Total'],
-      jurisdictions.map(jur => {
-        const val = currRow[jur] || 0;
-        const total = d3.sum(jurisdictions, j => currRow[j] || 0);
-        return [jur, val.toLocaleString(), `${((val / total) * 100).toFixed(1)}%`];
-      }).sort((a, b) => Number(b[1].replace(/,/g, '')) - Number(a[1].replace(/,/g, ''))));
+    const swatchWidth = 58;
+    const swatchHeight = 13;
+    COLOR_TIERS.forEach((tier, i) => {
+      const block = legendG.append('g').attr('transform', `translate(${i * (swatchWidth + 2)}, 0)`);
+
+      block.append('rect')
+        .attr('width', swatchWidth)
+        .attr('height', swatchHeight)
+        .attr('fill', tier.color)
+        .attr('stroke', '#94A3B8')
+        .attr('stroke-width', 0.8)
+        .attr('rx', 2);
+
+      block.append('text')
+        .attr('x', swatchWidth / 2)
+        .attr('y', swatchHeight + 13)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', '9.5px')
+        .attr('font-weight', '700')
+        .attr('fill', '#1E293B')
+        .text(tier.label);
+
+      block.append('text')
+        .attr('x', swatchWidth / 2)
+        .attr('y', swatchHeight + 25)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', '8.5px')
+        .attr('font-weight', '600')
+        .attr('fill', '#64748B')
+        .text(tier.tier);
+    });
   }
 
   updateMap();
@@ -703,10 +802,6 @@ function renderQ4Heatmap(data) {
       if (d.value >= 1000) return `${(d.value / 1000).toFixed(1)}k`;
       return d.value;
     });
-
-  buildAccessibleTable(container, 'Remoteness Distribution Heatmap Table (2011–2021)',
-    ['Year', 'Major Cities', 'Regional', 'Remote', 'Total'],
-    data.map(d => [d.year, d.majorCities.toLocaleString(), d.regional.toLocaleString(), d.remote.toLocaleString(), (d.majorCities + d.regional + d.remote).toLocaleString()]));
 }
 
 /* ============================================================
@@ -787,67 +882,35 @@ function renderQ5SmallMultiples(data) {
       .attr('stroke-width', 2.5)
       .attr('d', line);
 
-    // End points
+    // Interactive Points for All Years (2011–2021)
     svg.selectAll('circle')
-      .data([series[0], series[series.length - 1]]).join('circle')
+      .data(series).join('circle')
+      .attr('class', 'multiple-point')
       .attr('cx', d => x(d.year))
       .attr('cy', d => y(d.value))
-      .attr('r', 3.5)
-      .attr('fill', isPeak ? '#E11D48' : '#0284C7');
-  });
+      .attr('r', d => (d.year === 2011 || d.year === 2021) ? 4.5 : 3.2)
+      .attr('fill', isPeak ? '#E11D48' : '#0284C7')
+      .attr('stroke', '#FFFFFF')
+      .attr('stroke-width', d => (d.year === 2011 || d.year === 2021) ? 1.8 : 1)
+      .attr('tabindex', '0')
+      .attr('aria-label', d => `Age ${ag}, Year ${d.year}: ${d.value} hospitalisations`)
+      .on('mouseenter focus', function (event, d) {
+        d3.select(this)
+          .attr('r', 6)
+          .attr('stroke-width', 2.5);
 
-  buildAccessibleTable(container, 'First Nations Road Crash Admissions by Age Cohort (2011–2021)',
-    ['Year', '0-7', '8-16', '17-25', '26-39', '40-64', '65+', 'Total'],
-    data.map(d => {
-      const tot = d3.sum(ageGroups, ag => d[ag]);
-      return [d.year, d['0-7'], d['8-16'], d['17-25'], d['26-39'], d['40-64'], d['65+'], tot.toLocaleString()];
-    }));
-}
-
-/* ============================================================
-   ACCESSIBLE DATA TABLE GENERATOR
-   ============================================================ */
-function buildAccessibleTable(container, captionText, headers, rows) {
-  const wrap = container.append('div').attr('class', 'table-toggle-wrap');
-
-  const btn = wrap.append('button')
-    .attr('class', 'table-toggle-btn')
-    .attr('type', 'button')
-    .attr('aria-expanded', 'false')
-    .html('<span>Show Accessible Data Table</span> <span aria-hidden="true">▼</span>');
-
-  const tableWrap = wrap.append('div')
-    .attr('class', 'chart-data-table-wrap')
-    .attr('tabindex', '0')
-    .attr('role', 'region')
-    .attr('aria-label', captionText);
-
-  const table = tableWrap.append('table').attr('class', 'chart-data-table');
-  table.append('caption').text(captionText);
-
-  table.append('thead').append('tr')
-    .selectAll('th')
-    .data(headers).join('th')
-    .attr('scope', 'col')
-    .text(d => d);
-
-  table.append('tbody')
-    .selectAll('tr')
-    .data(rows).join('tr')
-    .selectAll('td')
-    .data((d, i) => d.map((cell, cellIdx) => ({ cell, isHeader: cellIdx === 0 })))
-    .join(enter => {
-      return enter.append(d => d.isHeader ? document.createElement('th') : document.createElement('td'))
-        .attr('scope', d => d.isHeader ? 'row' : null)
-        .text(d => d.cell);
-    });
-
-  btn.on('click', function () {
-    const isOpen = tableWrap.classed('is-open');
-    tableWrap.classed('is-open', !isOpen);
-    d3.select(this)
-      .attr('aria-expanded', !isOpen)
-      .html(`<span>${!isOpen ? 'Hide Accessible Data Table' : 'Show Accessible Data Table'}</span> <span aria-hidden="true">${!isOpen ? '▲' : '▼'}</span>`);
+        const [mx, my] = d3.pointer(event, container.node());
+        tooltip.style('opacity', 1)
+          .html(`<strong>Age ${ag}</strong> • Year <strong>${d.year}</strong><br/>Hospitalised: <strong>${d.value.toLocaleString()}</strong> admissions`)
+          .style('left', `${mx + 12}px`)
+          .style('top', `${my - 28}px`);
+      })
+      .on('mouseleave blur', function (event, d) {
+        d3.select(this)
+          .attr('r', (d.year === 2011 || d.year === 2021) ? 4.5 : 3.2)
+          .attr('stroke-width', (d.year === 2011 || d.year === 2021) ? 1.8 : 1);
+        tooltip.style('opacity', 0);
+      });
   });
 }
 
@@ -871,7 +934,7 @@ function initStickyNavbar() {
 }
 
 function initActiveNavSpy() {
-  const sections = document.querySelectorAll('#story-prologue, .story-chapter, #team');
+  const sections = document.querySelectorAll('#story-prologue, .story-chapter, #about-us, #team');
   const navLinks = document.querySelectorAll('.nav-links .nav-link');
   if (!sections.length || !navLinks.length) return;
 

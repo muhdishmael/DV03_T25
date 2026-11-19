@@ -547,7 +547,7 @@ nav.sticky-nav.scrolled {
   border-left: 4px solid var(--color-primary-dark);
   padding: 12px 18px;
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  margin-bottom: 18px;
+  margin-bottom: 12px;
   font-size: 1rem;
   font-weight: 700;
   color: var(--text-heading);
@@ -555,6 +555,49 @@ nav.sticky-nav.scrolled {
 
 .chapter-question strong {
   color: var(--color-primary-dark);
+}
+
+/* Interactive Question Instruction Banner */
+.chart-instruction {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+  margin-bottom: 20px;
+  font-size: 0.92rem;
+  color: #1E3A8A;
+  line-height: 1.5;
+  box-shadow: 0 1px 3px rgba(37, 99, 235, 0.05);
+}
+
+.instruction-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #DBEAFE;
+  color: #1D4ED8;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.instruction-text {
+  flex: 1;
+  color: #1E3A8A;
+}
+
+.instruction-text strong {
+  color: #0F172A;
+  font-weight: 700;
 }
 
 .chapter-narrative {
@@ -755,6 +798,30 @@ nav.sticky-nav.scrolled {
   fill: var(--color-primary-dark);
 }
 
+.chart-point--peak {
+  fill: #DC2626 !important;
+  stroke: #FFFFFF !important;
+  stroke-width: 2.5px;
+  filter: drop-shadow(0 2px 5px rgba(220, 38, 38, 0.5));
+}
+
+.chart-point--peak:hover, .chart-point--peak:focus {
+  r: 9;
+  fill: #B91C1C !important;
+}
+
+.multiple-point {
+  cursor: pointer;
+  transition: r 0.15s ease, stroke-width 0.15s ease;
+}
+
+.multiple-point:hover, .multiple-point:focus {
+  r: 6 !important;
+  stroke: #FFFFFF !important;
+  stroke-width: 2px !important;
+  outline: none;
+}
+
 /* Diverging Bar Chart Styles (Q2) */
 .diverging-zero-line {
   stroke: var(--border-dark);
@@ -885,82 +952,6 @@ nav.sticky-nav.scrolled {
   transition: opacity 0.15s ease;
   z-index: 50;
   white-space: nowrap;
-}
-
-/* Accessible Table */
-.table-toggle-wrap {
-  margin-top: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.table-toggle-btn {
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: #FFFFFF;
-  border: 1px solid var(--border-medium);
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
-  font-size: 0.84rem;
-  font-weight: 700;
-  color: var(--text-heading);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.table-toggle-btn:hover, .table-toggle-btn:focus-visible {
-  background: var(--bg-subtle);
-  border-color: var(--color-primary-dark);
-}
-
-.chart-data-table-wrap {
-  max-height: 280px;
-  overflow-y: auto;
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  background: #FFFFFF;
-  display: none;
-}
-
-.chart-data-table-wrap.is-open {
-  display: block;
-}
-
-.chart-data-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.88rem;
-  text-align: left;
-}
-
-.chart-data-table caption {
-  font-weight: 700;
-  padding: 8px;
-  background: #F8FAFC;
-  color: var(--text-heading);
-  text-align: left;
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-.chart-data-table th, .chart-data-table td {
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-.chart-data-table th {
-  background: #F8FAFC;
-  color: var(--text-heading);
-  font-weight: 700;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
-
-.chart-data-table tr:hover {
-  background: #F1F5F9;
 }
 
 .story-callout {
@@ -1162,4 +1153,5 @@ footer.site-footer {
   .chapter-card { padding: 24px 18px; }
   .footer-group-col { text-align: left; }
   .chart-header-row { flex-direction: column; align-items: flex-start; }
+  .chart-instruction { flex-direction: column; align-items: flex-start; gap: 8px; padding: 10px 14px; }
 }
