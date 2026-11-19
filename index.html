@@ -87,11 +87,11 @@
 
       <div class="nav-links" role="menubar">
         <a class="nav-link" href="#story-prologue" role="menuitem">Overview</a>
-        <a class="nav-link" href="#act1" role="menuitem">Q1. National Trend</a>
-        <a class="nav-link" href="#act2" role="menuitem">Q2. Circumstances</a>
-        <a class="nav-link" href="#act3" role="menuitem">Q3. Jurisdictions</a>
-        <a class="nav-link" href="#act4" role="menuitem">Q4. Remoteness</a>
-        <a class="nav-link" href="#act5" role="menuitem">Q5. First Nations</a>
+        <a class="nav-link" href="#act1" role="menuitem">National Trend</a>
+        <a class="nav-link" href="#act2" role="menuitem">Circumstances</a>
+        <a class="nav-link" href="#act3" role="menuitem">Jurisdictions</a>
+        <a class="nav-link" href="#act4" role="menuitem">Remoteness</a>
+        <a class="nav-link" href="#act5" role="menuitem">First Nations</a>
         <a class="nav-link" href="#about-us" role="menuitem">About Us</a>
       </div>
     </div>
@@ -160,15 +160,13 @@
     <section id="act1" class="story-chapter" aria-labelledby="heading-act1">
       <div class="chapter-card">
         <div class="chapter-meta">
-          <span class="act-badge">Question 01</span>
-          <span class="chart-type-tag">Chart Type: Line Chart</span>
           <span class="chapter-theme-tag">National Long-Term Trajectory (2011–2021)</span>
         </div>
 
         <h2 id="heading-act1" class="chapter-title">The Road Injury Story: 11 Years in Review</h2>
 
         <div class="chapter-question">
-          <strong>Q1 (National Trend):</strong> How did the national total of road-crash hospitalisations change across
+          How did the national total of road-crash hospitalisations change across
           Australia from 2011 to 2021, and what trends can be observed over this period?
         </div>
 
@@ -193,41 +191,52 @@
       </div>
     </section>
 
-    <!-- ACT 2: QUESTION 2 - DIVERGING BAR CHART -->
+    <!-- ACT 2: QUESTION 2 - COUNTERPARTY PATTERNS (LINE CHART) -->
     <section id="act2" class="story-chapter" aria-labelledby="heading-act2">
       <div class="chapter-card">
+
         <div class="chapter-meta">
-          <span class="act-badge">Question 02</span>
-          <span class="chart-type-tag">Chart Type: Diverging Bar Chart</span>
-          <span class="chapter-theme-tag">Crash Circumstances &amp; Vehicle Categories</span>
+          <span class="chapter-theme-tag">
+            Counterparty Patterns &amp; Road User Categories
+          </span>
         </div>
 
-        <h2 id="heading-act2" class="chapter-title">Behind the Crashes: What Caused the Most Injuries?</h2>
+        <h2 id="heading-act2" class="chapter-title">
+          Behind the Crashes: What Was Involved?
+        </h2>
 
         <div class="chapter-question">
-          <strong>Q2 (Crash Circumstances):</strong> Which crash circumstances contributed the most to road-crash
-          hospitalisations, and how did their respective hospitalisation counts change over the years?
+          How did road-crash hospitalisation counts vary across different
+          vehicle, road user and object categories from 2011 to 2021?
         </div>
 
         <div class="chart-instruction" role="note">
           <div class="instruction-badge">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <svg width="15" height="15" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round"
+              aria-hidden="true">
               <circle cx="12" cy="12" r="10"></circle>
               <line x1="12" y1="16" x2="12" y2="12"></line>
               <line x1="12" y1="8" x2="12.01" y2="8"></line>
             </svg>
             <span>Interaction Guide</span>
           </div>
-          <span class="instruction-text">Use the comparison year buttons (<strong>2014</strong>, <strong>2018</strong>,
-            <strong>2019</strong>, <strong>2020</strong>, <strong>2021</strong>) to compare growth against the 2011
-            baseline. Hover over each bar for exact case counts, net changes, and percentage shifts.</span>
+
+          <span class="instruction-text">
+            Use the buttons to switch between the <strong>Top 5</strong> categories, the
+            <strong>Remaining</strong> categories, or <strong>Show All</strong>. Hover over any
+            point to see the exact count for that year, or hover a legend item to highlight its line.
+          </span>
         </div>
 
-        <div id="canvas-act2" class="chart-container-box" role="region"
-          aria-label="Crash circumstances diverging bar chart">
+        <div id="canvas-act2"
+          class="chart-container-box"
+          role="region"
+          aria-label="Counterparty patterns line chart">
           <!-- Populated dynamically by script.js -->
         </div>
+
       </div>
     </section>
 
@@ -235,15 +244,13 @@
     <section id="act3" class="story-chapter" aria-labelledby="heading-act3">
       <div class="chapter-card">
         <div class="chapter-meta">
-          <span class="act-badge">Question 03</span>
-          <span class="chart-type-tag">Chart Type: Choropleth Map</span>
           <span class="chapter-theme-tag">States &amp; Territories Comparison</span>
         </div>
 
         <h2 id="heading-act3" class="chapter-title">Across Australia: Where Were Injuries Highest?</h2>
 
         <div class="chapter-question">
-          <strong>Q3 (Jurisdictional Differences):</strong> How did road-crash hospitalisation counts vary across
+          How did road-crash hospitalisation counts vary across
           Australian states and territories, and which jurisdictions recorded the highest numbers over the selected
           years?
         </div>
@@ -258,10 +265,9 @@
             </svg>
             <span>Interaction Guide</span>
           </div>
-          <span class="instruction-text">Use the year buttons (<strong>2011</strong>, <strong>2014</strong>,
-            <strong>2018</strong>, <strong>2019</strong>, <strong>2021</strong>) to view jurisdictional changes over
-            time. Hover over any state or territory for exact admission counts and national share. Clear dark blue
-            indicates highest counts, while light blue denotes lowest counts.</span>
+          <span class="instruction-text">Use the dropdown to select any year from <strong>2011</strong> to
+            <strong>2021</strong>. Hover over any state or territory for exact admission counts and national share.
+            Dark blue indicates the highest counts and light blue the lowest.</span>
         </div>
 
         <div id="canvas-act3" class="chart-container-box" role="region"
@@ -275,15 +281,13 @@
     <section id="act4" class="story-chapter" aria-labelledby="heading-act4">
       <div class="chapter-card">
         <div class="chapter-meta">
-          <span class="act-badge">Question 04</span>
-          <span class="chart-type-tag">Chart Type: Heatmap</span>
           <span class="chapter-theme-tag">Major Cities vs. Regional vs. Remote</span>
         </div>
 
         <h2 id="heading-act4" class="chapter-title">City to Outback: How Location Shapes Road Injuries</h2>
 
         <div class="chapter-question">
-          <strong>Q4 (Remoteness Distribution):</strong> How did road-crash hospitalisation counts differ across Major
+          How did road-crash hospitalisation counts differ across Major
           Cities, Regional and Remote areas, and how did these patterns change from year to year?
         </div>
 
@@ -312,8 +316,6 @@
     <section id="act5" class="story-chapter" aria-labelledby="heading-act5">
       <div class="chapter-card">
         <div class="chapter-meta">
-          <span class="act-badge">Question 05</span>
-          <span class="chart-type-tag">Chart Type: Small Multiples (Area Charts)</span>
           <span class="chapter-theme-tag">First Nations Road Safety &amp; Age Cohorts</span>
         </div>
 

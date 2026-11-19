@@ -5,8 +5,8 @@
  * Main Application Script: js/script.js
  * Visualizations:
  *   Q1: Line Chart
- *   Q2: Diverging Bar Chart
- *   Q3: Choropleth Map
+ *   Q2: Multi-line Chart (Top 5 / Remaining / Show All)
+ *   Q3: Choropleth Map (year dropdown 2011–2021)
  *   Q4: Heatmap
  *   Q5: Small Multiples (Area Charts)
  * Accessibility: WCAG 2.1 AA+ Compliant
@@ -206,7 +206,7 @@ async function initAllCharts() {
   }), DATA_FALLBACKS.q1);
   renderQ1LineChart(q1Data);
 
-  // 2. Chart Q2: Diverging bar chart (Crash Circumstances)
+  // 2. Chart Q2: Multi-line chart (Crash Circumstances)
   const q2Data = await loadCsvData('data/Q2_Crash_Circumstances.csv', row => {
     const parsed = { year: Number(row['Calendar year']) };
     Object.keys(row).forEach(k => {
@@ -214,7 +214,7 @@ async function initAllCharts() {
     });
     return parsed;
   }, DATA_FALLBACKS.q2);
-  renderQ2DivergingBarChart(q2Data);
+  renderQ2LineChart(q2Data);
 
   // 3. Chart Q3: Choropleth Map (Jurisdictional Differences)
   const q3Data = await loadCsvData('data/Q3_Jurisdictions.csv', row => {
@@ -381,132 +381,192 @@ function renderQ1LineChart(data) {
     .on('mouseleave blur', () => tooltip.style('opacity', 0));
 }
 
+
 /* ============================================================
-   CHART 2 (Q2): DIVERGING BAR CHART (Crash Circumstances Change)
+   CHART 2 (Q2): MULTI-LINE CHART
+   COUNTERPARTY PATTERNS (2011–2021)
+   X axis = year | Buttons: Top 5 / Remaining / Show All
    ============================================================ */
-function renderQ2DivergingBarChart(data) {
+function renderQ2LineChart(data) {
   const container = d3.select('#canvas-act2');
   if (container.empty() || !data.length) return;
   container.selectAll('*').remove();
 
-  let targetYear = 2021;
-  const categories = Object.keys(data[0]).filter(k => k !== 'year');
-  const baseYearRow = data[0]; // 2011 baseline
+  const TOP5 = [
+    'Car, pick-up truck or van',
+    'Non-collision transport accident',
+    'Fixed or stationary object',
+    'Other and unspecified transport accidents',
+    'Heavy transport vehicle or bus'
+  ];
+  const allCats = Object.keys(data[0]).filter(k => k !== 'year');
+  const REMAINING = allCats.filter(c => !TOP5.includes(c));
 
+  // One fixed colour per category so colours stay the same across views
+  const PALETTE = ['#0369A1', '#DC2626', '#047857', '#B45309', '#7C3AED',
+                   '#DB2777', '#0D9488', '#4F46E5', '#65A30D', '#475569'];
+  const ORDER = TOP5.concat(REMAINING);
+  const color = name => PALETTE[ORDER.indexOf(name) % PALETTE.length];
+
+  const VIEWS = {
+    top5:      { label: 'Top 5',     cats: TOP5 },
+    remaining: { label: 'Remaining', cats: REMAINING },
+    all:       { label: 'Show All',  cats: ORDER }
+  };
+  let selectedView = 'top5';
+
+  // Header + buttons
   const header = container.append('div').attr('class', 'chart-header-row');
   header.append('div').attr('class', 'chart-heading-group')
-    .html('<h3>Diverging Bar Chart: Crash Circumstances Change vs. 2011</h3><p>Compares percentage growth or decline across circumstances from the 2011 baseline</p>');
+    .html('<h3>Counterparty Patterns: Hospitalisations by Year</h3><p>Compare how each vehicle, road user and object category changed from 2011 to 2021.</p>');
 
-  // Year Selection
-  const controls = header.append('div').attr('class', 'chart-controls');
-  controls.append('span').attr('class', 'control-label').text('Compare Year:');
-  const comparisonYears = [2014, 2018, 2019, 2020, 2021];
+  const controls = header.append('div').attr('class', 'chart-controls')
+    .attr('role', 'group').attr('aria-label', 'Choose which categories to display');
 
-  comparisonYears.forEach(yr => {
+  Object.entries(VIEWS).forEach(([key, v]) => {
     controls.append('button')
-      .attr('class', `chart-btn ${yr === targetYear ? 'active' : ''}`)
-      .attr('aria-pressed', yr === targetYear)
-      .text(yr)
+      .attr('class', `chart-btn ${key === selectedView ? 'active' : ''}`)
+      .attr('data-view', key)
+      .attr('aria-pressed', key === selectedView)
+      .text(v.label)
       .on('click', function () {
-        controls.selectAll('.chart-btn').classed('active', false).attr('aria-pressed', 'false');
+        selectedView = key;
+        controls.selectAll('.chart-btn')
+          .classed('active', false).attr('aria-pressed', 'false');
         d3.select(this).classed('active', true).attr('aria-pressed', 'true');
-        targetYear = yr;
-        updateDivergingChart();
+        tooltip.style('opacity', 0);
+        update();
       });
   });
 
+  const kpiRow = container.append('div').attr('class', 'chart-kpi-row');
+  const countKpi = kpiRow.append('span').attr('class', 'chart-kpi-pill');
+  const topKpi = kpiRow.append('span').attr('class', 'chart-kpi-pill');
+
   const chartBody = container.append('div');
+  const legend = container.append('div').attr('class', 'q2-legend').attr('aria-label', 'Chart legend');
   const tooltip = createTooltip(container);
 
-  function updateDivergingChart() {
-    chartBody.selectAll('*').remove();
-    const currRow = data.find(d => d.year === targetYear) || data[data.length - 1];
+  const width = 850, height = 400;
+  const margin = { top: 20, right: 30, bottom: 45, left: 70 };
 
-    // Compute percentage change for each circumstance
-    const items = categories.map(cat => {
-      const vBase = baseYearRow[cat] || 0;
-      const vCurr = currRow[cat] || 0;
-      const pct = vBase > 0 ? ((vCurr - vBase) / vBase) * 100 : 0;
-      return {
-        name: cat,
-        base: vBase,
-        curr: vCurr,
-        delta: vCurr - vBase,
-        pct: pct
-      };
-    }).sort((a, b) => b.pct - a.pct);
-
-    const width = 850;
-    const height = 380;
-    const margin = { top: 25, right: 90, bottom: 35, left: 240 };
-
-    const svgWrap = chartBody.append('div').attr('class', 'chart-svg-wrap');
-    const svg = svgWrap.append('svg')
-      .attr('class', 'chart-svg')
-      .attr('viewBox', `0 0 ${width} ${height}`)
-      .attr('role', 'img')
-      .attr('aria-label', `Diverging bar chart comparing crash circumstance growth between 2011 and ${targetYear}`);
-
-    const maxPct = Math.max(d3.max(items, d => Math.abs(d.pct)), 40) * 1.15;
-    const x = d3.scaleLinear().domain([-maxPct, maxPct]).range([margin.left, width - margin.right]);
-    const y = d3.scaleBand().domain(items.map(d => d.name)).range([margin.top, height - margin.bottom]).padding(0.28);
-
-    // Center 0% line
-    svg.append('line')
-      .attr('class', 'diverging-zero-line')
-      .attr('x1', x(0))
-      .attr('x2', x(0))
-      .attr('y1', margin.top - 5)
-      .attr('y2', height - margin.bottom + 5);
-
-    // X Axis with % labels
-    svg.append('g').attr('transform', `translate(0,${height - margin.bottom})`)
-      .call(d3.axisBottom(x).ticks(7).tickFormat(d => `${d > 0 ? '+' : ''}${d}%`))
-      .call(g => g.selectAll('text').attr('class', 'chart-axis-label'));
-
-    // Y Axis labels
-    svg.append('g').attr('transform', `translate(${margin.left},0)`)
-      .call(d3.axisLeft(y).tickSize(0))
-      .call(g => g.select('.domain').remove())
-      .call(g => g.selectAll('text').attr('class', 'chart-axis-label').style('font-size', '12px').style('font-weight', '600'));
-
-    // Diverging Bars
-    svg.selectAll('.diverging-bar')
-      .data(items).join('rect')
-      .attr('class', d => `diverging-bar ${d.pct >= 0 ? 'bar-positive' : 'bar-negative'}`)
-      .attr('x', d => d.pct >= 0 ? x(0) : x(d.pct))
-      .attr('y', d => y(d.name))
-      .attr('width', d => Math.abs(x(d.pct) - x(0)))
-      .attr('height', y.bandwidth())
-      .attr('rx', 3)
-      .attr('tabindex', '0')
-      .attr('aria-label', d => `${d.name}: ${d.pct > 0 ? '+' : ''}${d.pct.toFixed(1)}% (${d.curr.toLocaleString()} in ${targetYear} vs ${d.base.toLocaleString()} in 2011)`)
-      .on('mouseenter focus', (event, d) => {
-        tooltip.style('opacity', 1)
-          .html(`<strong>${d.name}</strong><br/>2011: ${d.base.toLocaleString()} → ${targetYear}: ${d.curr.toLocaleString()}<br/>Change: <strong>${d.pct > 0 ? '+' : ''}${d.pct.toFixed(1)}%</strong> (${d.delta > 0 ? '+' : ''}${d.delta.toLocaleString()} cases)`)
-          .style('left', `${x(0) + (d.pct >= 0 ? 15 : -140)}px`)
-          .style('top', `${y(d.name) + 30}px`);
-      })
-      .on('mouseleave blur', () => tooltip.style('opacity', 0));
-
-    // Value Labels
-    svg.selectAll('.bar-val-label')
-      .data(items).join('text')
-      .attr('class', 'bar-val-label')
-      .attr('x', d => d.pct >= 0 ? x(d.pct) + 6 : x(d.pct) - 6)
-      .attr('y', d => y(d.name) + y.bandwidth() / 2 + 4)
-      .attr('text-anchor', d => d.pct >= 0 ? 'start' : 'end')
-      .attr('font-size', '11px')
-      .attr('font-weight', '700')
-      .attr('fill', d => d.pct >= 0 ? '#047857' : '#E11D48')
-      .text(d => `${d.pct > 0 ? '+' : ''}${d.pct.toFixed(1)}%`);
+  function showTip(event, el, html) {
+    const box = container.node().getBoundingClientRect();
+    let mx, my;
+    if (event.type === 'focus') {
+      const r = el.getBoundingClientRect();
+      mx = r.left - box.left + r.width / 2;
+      my = r.top - box.top;
+    } else {
+      [mx, my] = d3.pointer(event, container.node());
+    }
+    tooltip.style('opacity', 1).html(html)
+      .style('left', `${mx + 12}px`)
+      .style('top', `${my - 40}px`);
   }
 
-  updateDivergingChart();
+  function update() {
+    const cats = VIEWS[selectedView].cats;
+    chartBody.selectAll('*').remove();
+    legend.selectAll('*').remove();
+
+    // KPI pills
+    const totals = cats.map(c => ({ name: c, total: d3.sum(data, d => d[c]) }))
+      .sort((a, b) => b.total - a.total);
+    countKpi.text(`Showing ${cats.length} categories`);
+    topKpi.text(`Largest over 2011–2021: ${totals[0].name} (${totals[0].total.toLocaleString()})`);
+
+    const series = cats.map(c => ({
+      name: c,
+      values: data.map(d => ({ year: d.year, value: d[c] }))
+    }));
+
+    const maxVal = d3.max(series, s => d3.max(s.values, v => v.value));
+    const x = d3.scaleLinear().domain(d3.extent(data, d => d.year))
+      .range([margin.left, width - margin.right]);
+    const y = d3.scaleLinear().domain([0, maxVal * 1.1]).nice()
+      .range([height - margin.bottom, margin.top]);
+
+    const svg = chartBody.append('div').attr('class', 'chart-svg-wrap')
+      .append('svg').attr('class', 'chart-svg')
+      .attr('viewBox', `0 0 ${width} ${height}`)
+      .attr('role', 'img')
+      .attr('aria-label', `Line chart of hospitalisations by year for ${VIEWS[selectedView].label} categories`);
+
+    // Grid
+    svg.append('g').selectAll('line').data(y.ticks(5)).join('line')
+      .attr('class', 'chart-grid-line')
+      .attr('x1', margin.left).attr('x2', width - margin.right)
+      .attr('y1', d => y(d)).attr('y2', d => y(d));
+
+    // Axes
+    svg.append('g').attr('transform', `translate(0,${height - margin.bottom})`)
+      .call(d3.axisBottom(x).tickValues(data.map(d => d.year)).tickFormat(d3.format('d')))
+      .call(g => g.selectAll('text').attr('class', 'chart-axis-label'));
+
+    svg.append('g').attr('transform', `translate(${margin.left},0)`)
+      .call(d3.axisLeft(y).ticks(5).tickFormat(d3.format(',')))
+      .call(g => g.selectAll('text').attr('class', 'chart-axis-label'));
+
+    svg.append('text').attr('class', 'chart-axis-label')
+      .attr('x', 14).attr('y', margin.top - 6).text('Hospitalisations');
+
+    // Lines
+    const line = d3.line().x(d => x(d.year)).y(d => y(d.value)).curve(d3.curveMonotoneX);
+    const groups = svg.selectAll('.q2-series').data(series).join('g')
+      .attr('class', 'q2-series').attr('data-name', d => d.name);
+
+    groups.append('path')
+      .attr('fill', 'none')
+      .attr('stroke', d => color(d.name))
+      .attr('stroke-width', 3)
+      .attr('stroke-linejoin', 'round')
+      .attr('stroke-linecap', 'round')
+      .attr('d', d => line(d.values));
+
+    // Points
+    groups.each(function (s) {
+      d3.select(this).selectAll('circle').data(s.values).join('circle')
+        .attr('class', 'q2-point')
+        .attr('cx', d => x(d.year)).attr('cy', d => y(d.value))
+        .attr('r', 4)
+        .attr('fill', '#FFFFFF')
+        .attr('stroke', color(s.name))
+        .attr('stroke-width', 2.5)
+        .attr('tabindex', '0')
+        .attr('aria-label', d => `${s.name}, ${d.year}: ${d.value.toLocaleString()} hospitalisations`)
+        .on('mouseenter focus', function (event, d) {
+          d3.select(this).attr('r', 7);
+          showTip(event, this, `<strong>${s.name}</strong><br/>Year <strong>${d.year}</strong>: <strong>${d.value.toLocaleString()}</strong> hospitalisations`);
+        })
+        .on('mouseleave blur', function () {
+          d3.select(this).attr('r', 4);
+          tooltip.style('opacity', 0);
+        });
+    });
+
+    // Legend: HTML, wraps onto as many rows as needed, so no label is ever cut off
+    const items = legend.selectAll('.q2-legend-item').data(series).join('div')
+      .attr('class', 'q2-legend-item')
+      .on('mouseenter', (e, s) => highlight(s.name))
+      .on('mouseleave', () => highlight(null));
+
+    items.append('span').attr('class', 'q2-legend-swatch')
+      .style('background', s => color(s.name));
+    items.append('span').text(s => s.name);
+
+    function highlight(name) {
+      groups.style('opacity', s => (!name || s.name === name) ? 1 : 0.15);
+    }
+  }
+
+  update();
 }
+
 
 /* ============================================================
    CHART 3 (Q3): CHOROPLETH MAP (Jurisdictions Across Australia)
+   Year dropdown: 2011–2021
    ============================================================ */
 function renderQ3ChoroplethMap(data) {
   const container = d3.select('#canvas-act3');
@@ -518,22 +578,26 @@ function renderQ3ChoroplethMap(data) {
   header.append('div').attr('class', 'chart-heading-group')
     .html('<h3>Australia Jurisdictions Choropleth Map</h3><p>Sequential blue shading: Darker blue indicates higher hospitalisation counts. Hover over states for exact details.</p>');
 
-  // Year Selection
+  // Year Selection (dropdown, 2011–2021)
   const controls = header.append('div').attr('class', 'chart-controls');
-  controls.append('span').attr('class', 'control-label').text('Select Year:');
-  const years = [2011, 2014, 2018, 2019, 2021];
+  controls.append('label').attr('class', 'control-label')
+    .attr('for', 'q3-year-select').text('Select Year:');
 
-  years.forEach(yr => {
-    controls.append('button')
-      .attr('class', `chart-btn ${yr === selectedYear ? 'active' : ''}`)
-      .attr('aria-pressed', yr === selectedYear)
-      .text(yr)
-      .on('click', function () {
-        controls.selectAll('.chart-btn').classed('active', false).attr('aria-pressed', 'false');
-        d3.select(this).classed('active', true).attr('aria-pressed', 'true');
-        selectedYear = yr;
-        updateMap();
-      });
+  const yearSelect = controls.append('select')
+    .attr('id', 'q3-year-select')
+    .attr('class', 'chart-select')
+    .attr('aria-label', 'Select year for the jurisdictions map');
+
+  const years = data.map(d => d.year).sort((a, b) => a - b);
+  yearSelect.selectAll('option').data(years).join('option')
+    .attr('value', d => d)
+    .property('selected', d => d === selectedYear)
+    .text(d => d);
+
+  yearSelect.on('change', function () {
+    selectedYear = Number(this.value);
+    tooltip.style('opacity', 0);
+    updateMap();
   });
 
   const chartBody = container.append('div');
